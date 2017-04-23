@@ -29,8 +29,8 @@ void old_picture_render(Window& window)
 	};
 
 	ShaderProgram shader;
-	shader.addVertexShader("res/shaders/main.vert");
-	shader.addFragmentShader("res/shaders/main.frag");
+	shader.add(ShaderType::VertexShader, "res/shaders/main.vert");
+	shader.add(ShaderType::FragmentShader, "res/shaders/main.frag");
 	shader.compile();
 
 	Mesh mesh;

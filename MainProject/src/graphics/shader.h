@@ -15,5 +15,6 @@ class Shader final : GLResource
 public:
 	explicit Shader(ShaderType type, const std::string& source, bool isPath = true);
 	~Shader();
+	GLuint getId() const override;
 	std::string getInfoLog() const;
 };

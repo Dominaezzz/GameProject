@@ -67,17 +67,17 @@ TerrainSystem::TerrainSystem(World * world) : System(world)
 {
 	generateTerrain(terrainMesh);
 
-	terrainShader.addVertexShader("res/Shaders/Modular/mainShader.vert", true);
-	terrainShader.addVertexShader("res/Shaders/Modular/static.vert", true);
-	terrainShader.addVertexShader("res/Shaders/Modular/normal.vert", true);
+	terrainShader.add(ShaderType::VertexShader, "res/Shaders/Modular/mainShader.vert");
+	terrainShader.add(ShaderType::VertexShader, "res/Shaders/Modular/static.vert");
+	terrainShader.add(ShaderType::VertexShader, "res/Shaders/Modular/normal.vert");
 	
-	terrainShader.addFragmentShader("res/Shaders/Modular/mainShader.frag", true);
-	terrainShader.addFragmentShader("res/Shaders/Modular/ambient.frag", true);
-	terrainShader.addFragmentShader("res/Shaders/Generic/terrainDiffuse.frag", true);
-	terrainShader.addFragmentShader("res/Shaders/Modular/specular.frag", true);
-	terrainShader.addFragmentShader("res/Shaders/Modular/emissive.frag", true);
-	terrainShader.addFragmentShader("res/Shaders/Modular/lighting.frag", true);
-	terrainShader.addFragmentShader("res/Shaders/Modular/normal.frag", true);
+	terrainShader.add(ShaderType::FragmentShader, "res/Shaders/Modular/mainShader.frag");
+	terrainShader.add(ShaderType::FragmentShader, "res/Shaders/Modular/ambient.frag");
+	terrainShader.add(ShaderType::FragmentShader, "res/Shaders/Generic/terrainDiffuse.frag");
+	terrainShader.add(ShaderType::FragmentShader, "res/Shaders/Modular/specular.frag");
+	terrainShader.add(ShaderType::FragmentShader, "res/Shaders/Modular/emissive.frag");
+	terrainShader.add(ShaderType::FragmentShader, "res/Shaders/Modular/lighting.frag");
+	terrainShader.add(ShaderType::FragmentShader, "res/Shaders/Modular/normal.frag");
 
 	terrainShader.compile();
 

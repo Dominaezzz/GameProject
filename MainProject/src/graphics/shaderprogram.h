@@ -4,23 +4,24 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
+#include <memory>
+#include "shader.h"
 
 class ShaderProgram
 {
 	GLuint program;
-	std::vector<GLuint> shaders;
+	std::vector<std::shared_ptr<Shader>> shaders;
 	std::unordered_map<std::string, GLuint> attributes;
 	std::unordered_map<std::string, GLuint> uniforms;
-
-	void addShader(GLenum type, const std::string& source, bool isPath);
 public:
 	ShaderProgram();
 	~ShaderProgram();
 	void begin() const;
 	void end() const;
 	void compile();
-	void addVertexShader(const std::string& source, bool isPath = true);
-	void addFragmentShader(const std::string& source, bool isPath = true);
+	void attach(std::shared_ptr<Shader> shader);
+	void add(ShaderType type, const std::string& source, bool isPath = true);
+	std::string getInfoLog() const;
 	GLuint getAttributeLocation(const std::string& name);
 	GLuint getUniformLocation(const std::string& name);
 };

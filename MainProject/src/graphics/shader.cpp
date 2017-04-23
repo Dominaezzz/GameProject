@@ -38,6 +38,11 @@ Shader::~Shader()
 	glDeleteShader(shader);
 }
 
+GLuint Shader::getId() const
+{
+	return shader;
+}
+
 std::string Shader::getInfoLog() const
 {
 	GLint logLength;

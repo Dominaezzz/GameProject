@@ -1,104 +1,49 @@
 #include "shaderprogram.h"
-#include <fstream>
-#include <iostream>
 
 
-ShaderProgram::ShaderProgram() {
+ShaderProgram::ShaderProgram()
+{
 	program = glCreateProgram();
 }
 
-ShaderProgram::~ShaderProgram() {
-	for (auto shader : shaders) {
-		glDetachShader(program, shader);
-		glDeleteShader(shader);
-	}
-
+ShaderProgram::~ShaderProgram()
+{
+	for (auto shader : shaders) glDetachShader(program, shader->getId());
 	glDeleteProgram(program);
 }
 
-void ShaderProgram::begin() const {
+void ShaderProgram::begin() const
+{
 	glUseProgram(program);
 }
 
-void ShaderProgram::end() const {
+void ShaderProgram::end() const
+{
 	glUseProgram(0);
 }
 
-void checkShaderError(GLuint shader, GLuint flag, bool isProgram) {
+std::string ShaderProgram::getInfoLog() const
+{
+	GLint logLength;
+	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
+
+	std::string log(size_t(logLength), ' ');
+	glGetProgramInfoLog(program, logLength, &logLength, &log[0]);
+
+	return log;
+}
+
+void ShaderProgram::compile()
+{
 	GLint success = 0;
 
-	if (isProgram) {
-		glGetProgramiv(shader, flag, &success);
-	} else {
-		glGetShaderiv(shader, flag, &success);
-	}
-
-	if (success == GL_FALSE) {
-		GLint logLength;
-
-		if (isProgram) {
-			glGetProgramiv(shader, GL_INFO_LOG_LENGTH, &logLength);
-		} else {
-			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
-		}
-
-		std::string log((unsigned int) logLength, ' ');
-
-		if (isProgram) {
-			glGetProgramInfoLog(shader, logLength, &logLength, &log[0]);
-		} else {
-			glGetShaderInfoLog(shader, logLength, &logLength, &log[0]);
-		}
-
-		throw std::runtime_error(log);
-	}
-}
-
-void ShaderProgram::addShader(GLenum type, const std::string& source, bool isPath) {
-	GLuint shader = glCreateShader(type);
-
-	if (isPath)
-	{
-		std::ifstream file(source);
-		std::string temp;
-		std::string file_contents;
-		while (std::getline(file, temp))
-		{
-			file_contents += temp;
-			file_contents.push_back('\n');
-		}
-
-		const GLchar* text = file_contents.c_str();
-		glShaderSource(shader, 1, &text, NULL);
-	}
-	else
-	{
-		const GLchar* text = source.c_str();
-		glShaderSource(shader, 1, &text, NULL);
-	}
-
-	glCompileShader(shader);
-
-	checkShaderError(shader, GL_COMPILE_STATUS, false);
-
-	glAttachShader(program, shader);
-	shaders.push_back(shader);
-}
-
-void ShaderProgram::addVertexShader(const std::string& source, bool isPath) {
-	addShader(GL_VERTEX_SHADER, source, isPath);
-}
-
-void ShaderProgram::addFragmentShader(const std::string& source, bool isPath) {
-	addShader(GL_FRAGMENT_SHADER, source, isPath);
-}
-
-void ShaderProgram::compile() {
 	glLinkProgram(program);
-	checkShaderError(program, GL_LINK_STATUS, true);
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
+	if (success == GL_FALSE) throw std::runtime_error(getInfoLog());
 
 	glValidateProgram(program);
-	checkShaderError(program, GL_VALIDATE_STATUS, true);
+	glGetProgramiv(program, GL_VALIDATE_STATUS, &success);
+	if (success == GL_FALSE) throw std::runtime_error(getInfoLog());
 
 	GLchar temp[128];
 	GLsizei length;
@@ -110,7 +55,7 @@ void ShaderProgram::compile() {
 
 	glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, &count);
 	glGetProgramiv(program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxNameLength);
-	for (GLint i = 0; i < count; i++)
+	for (GLuint i = 0; i < count; i++)
 	{
 		glGetActiveAttrib(program, i, sizeof(temp), &length, &size, &type, temp);
 
@@ -120,13 +65,24 @@ void ShaderProgram::compile() {
 
 	glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &count);
 	glGetProgramiv(program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxNameLength);
-	for (GLint i = 0; i < count; i++)
+	for (GLuint i = 0; i < count; i++)
 	{
 		glGetActiveUniform(program, i, sizeof(temp), &length, &size, &type, temp);
 
 		std::string name(temp, length);
 		uniforms[name] = glGetUniformLocation(program, name.c_str());
 	}
+}
+
+void ShaderProgram::attach(std::shared_ptr<Shader> shader)
+{
+	glAttachShader(program, shader->getId());
+	shaders.push_back(shader);
+}
+
+void ShaderProgram::add(ShaderType type, const std::string & source, bool isPath)
+{
+	attach(std::make_shared<Shader>(type, source, isPath));
 }
 
 GLuint ShaderProgram::getAttributeLocation(const std::string& name) {

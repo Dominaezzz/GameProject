@@ -33,8 +33,8 @@ CameraSystem::CameraSystem(World* world) : System(world)
 	skyBoxMesh.setVertexAttribute<Vector3>(buffer, 0, GL_FLOAT, sizeof(Vector3), 0);
 	skyBoxMesh.setIndices(indices, sizeof(indices));
 
-	skyBoxShader.addVertexShader("res/shaders/Generic/skyBox.vert", true);
-	skyBoxShader.addFragmentShader("res/shaders/Generic/skyBox.frag", true);
+	skyBoxShader.add(ShaderType::VertexShader, "res/shaders/Generic/skyBox.vert");
+	skyBoxShader.add(ShaderType::FragmentShader, "res/shaders/Generic/skyBox.frag");
 	skyBoxShader.compile();
 
 	cameraBuffer.bindBase(0);
