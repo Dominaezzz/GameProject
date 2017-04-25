@@ -44,13 +44,14 @@ namespace math
 		}
 
 		Vector<size, T> normalized() const {
-			return Vector<size, T>(*this).normalize();
+			return Vector<size, T>(*static_cast<const Vector<size, T>*>(this)).normalize();
 		}
 	};
 }
 
 template<size_t size, typename T>
-struct Vector : public math::TVector<size, T> {
+struct Vector : public math::TVector<size, T>
+{
 	T data[size];
 
 	Vector() : Vector(0) {}
@@ -64,13 +65,14 @@ struct Vector : public math::TVector<size, T> {
 };
 
 template<typename T>
-struct Vector<2, T> : public math::TVector<2, T> {
+struct Vector<2, T> : public math::TVector<2, T>
+{
 	union {
-		T data[2];
 		struct
 		{
 			T x, y;
 		};
+		T data[2];
 	};
 
 	Vector() : Vector(0) {}
@@ -79,14 +81,15 @@ struct Vector<2, T> : public math::TVector<2, T> {
 };
 
 template<typename T>
-struct Vector<3, T> : public math::TVector<3, T> {
+struct Vector<3, T> : public math::TVector<3, T>
+{
 	union
 	{
-		T data[3];
 		struct
 		{
 			T x, y, z;
 		};
+		T data[3];
 	};
 
 	Vector() : Vector(0) {}
@@ -99,11 +102,11 @@ template<typename T>
 struct Vector<4, T> : public math::TVector<4, T> {
 	union
 	{
-		T data[4];
 		struct
 		{
 			T x, y, z, w;
 		};
+		T data[4];
 	};
 
 	Vector() : Vector(0) {}

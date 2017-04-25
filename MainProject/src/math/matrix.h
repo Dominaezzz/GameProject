@@ -535,6 +535,85 @@ public:
 
 		return result /= w;
 	}
+	Vector<3, T> extractTranslation() const
+	{
+		return Vector<3, T>((*this)(0, 3), (*this)(1, 3), (*this)(2, 3));
+	}
+	Vector<3, T> extractScale() const
+	{
+		Vector<3, T> result;
+		for (int i = 0; i < 3; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				result[i] += (*this)(i, j) * (*this)(i, j);
+			}
+			result[i] = sqrt(result[i]);
+		}
+		return result;
+	}
+	TQuaternion<T> extractRotation(bool row_normalise = true) const
+	{
+		Vector<3, T> column0((*this)(0, 0), (*this)(1, 0), (*this)(2, 0));// Row0.Xyz;
+		Vector<3, T> column1((*this)(0, 1), (*this)(1, 1), (*this)(2, 1));// Row1.Xyz;
+		Vector<3, T> column2((*this)(0, 2), (*this)(1, 2), (*this)(2, 2));// Row2.Xyz;
+
+		if (row_normalise)
+		{
+			column0 = column0.normalized();
+			column1 = column1.normalized();
+			column2 = column2.normalized();
+		}
+
+		// code below adapted from Blender
+
+		Quaternion q;
+		double trace = 0.25 * (column0[0] + column1[1] + column2[2] + 1.0);
+
+		if (trace > 0)
+		{
+			double sq = sqrt(trace);
+
+			q.w = T(sq);
+			sq = 1.0 / (4.0 * sq);
+			q.x = T((column1[2] - column2[1]) * sq);
+			q.y = T((column2[0] - column0[2]) * sq);
+			q.z = T((column0[1] - column1[0]) * sq);
+		}
+		else if (column0[0] > column1[1] && column0[0] > column2[2])
+		{
+			double sq = 2.0 * sqrt(1.0 + column0[0] - column1[1] - column2[2]);
+
+			q.x = T(0.25 * sq);
+			sq = 1.0 / sq;
+			q.w = T((column2[1] - column1[2]) * sq);
+			q.y = T((column1[0] + column0[1]) * sq);
+			q.z = T((column2[0] + column0[2]) * sq);
+		}
+		else if (column1[1] > column2[2])
+		{
+			double sq = 2.0 * sqrt(1.0 + column1[1] - column0[0] - column2[2]);
+
+			q.y = T(0.25 * sq);
+			sq = 1.0 / sq;
+			q.w = T((column2[0] - column0[2]) * sq);
+			q.x = T((column1[0] + column0[1]) * sq);
+			q.z = T((column2[1] + column1[2]) * sq);
+		}
+		else
+		{
+			double sq = 2.0 * sqrt(1.0 + column2[2] - column0[0] - column1[1]);
+
+			q.z = T(0.25 * sq);
+			sq = 1.0 / sq;
+			q.w = T((column1[0] - column0[1]) * sq);
+			q.x = T((column2[0] + column0[2]) * sq);
+			q.y = T((column2[1] + column1[2]) * sq);
+		}
+
+		q.normalize();
+		return q;
+	}
 };
 
 template<typename T, size_t rows, size_t columns>

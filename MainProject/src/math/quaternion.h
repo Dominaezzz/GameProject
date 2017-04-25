@@ -4,10 +4,10 @@
 #include <math.h>
 
 template<typename T>
-struct TQuaternion {
+struct TQuaternion
+{
 	union
 	{
-		T data[4];
 		Vector<4, T> xyzw;
 		struct
 		{
