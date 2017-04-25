@@ -50,36 +50,25 @@ void CameraSystem::update(float dt)
 
 void CameraSystem::render()
 {
-	//int count = nodes.Count();
-	//if (_matrices.Length < count) Array.Resize(ref _matrices, count);
+	std::vector<Matrices> matriceses(cameraNodes.size());
 
 	for (size_t i = 0; i < cameraNodes.size(); i++)
 	{
-//		var transform = nodes[i].Transform;
-//		_matrices[i] = new Matrices()
-//		{
-//			Projection = nodes[i].Camera.Projection,
-//			View = Matrix4.CreateTranslation(-transform.Position) * Matrix4.CreateFromQuaternion(transform.Rotation.Inverted())
-//		};
+		auto& node = cameraNodes[i];
+		matriceses[i].projection = node.camera->getProjection();
+		matriceses[i].view = Matrix4::createFromQuaternion(node.transform->Rotation.inverted()) * Matrix4::translate(-node.transform->Position);
+		matriceses[i].cameraPosition = node.transform->getWorldPosition();
 	}
-//	_matrixBuffer.SetData(_matrices);
+	cameraBuffer.setSubData(matriceses.data(), 0, sizeof(Matrices) * cameraNodes.size());
 
 	glDisable(GL_BLEND);
 	glDepthMask(false);
 	skyBoxShader.begin();
 	for (size_t i = 0; i < cameraNodes.size(); i++)
 	{
-		//_matrixBuffer.BindRange(0, i * Marshal.SizeOf<Matrices>(), Marshal.SizeOf<Matrices>());
+		cameraBuffer.bindRange(0, i * sizeof(Matrices), sizeof(Matrices));
 
 		auto& node = cameraNodes[i];
-
-		Matrices matrices;
-		matrices.projection = node.camera->getProjection();
-		matrices.view = Matrix4::createFromQuaternion(node.transform->rotation.inverted()) * Matrix4::translate(-node.transform->position);
-//		matrices.view = Matrix4::translate(-node.transform->position) * Matrix4::createFromQuaternion(node.transform->rotation.inverted());
-		matrices.cameraPosition = node.transform->position;
-
-		cameraBuffer.setSubData(&matrices, 0, sizeof(Matrices));
 
 		node.camera->skyBox->bind(0);
 		skyBoxMesh.render(GL_TRIANGLES, 0, 36);

@@ -36,7 +36,7 @@ void LightSystem::setPointLight(Lights::PointLight& pointLight, const Transform&
 {
 	setBaseLight(pointLight.baseLight, light);
 	pointLight.attenuation = light.attenuation;
-	pointLight.position = transform.position; // TODO Look at this. It should be transformed. No?
+	pointLight.position = transform.getWorldPosition();
 	pointLight.radius = light.range;
 }
 
