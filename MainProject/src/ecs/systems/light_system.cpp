@@ -22,7 +22,7 @@ void LightSystem::update(float dt)
 
 void LightSystem::setBaseLight(Lights::BaseLight& baseLight, const Light& light)
 {
-	baseLight.color = Vector3(light.color.r, light.color.g, light.color.b);
+	baseLight.color = Vector3(light.color.r / 255.0F, light.color.g / 255.0F, light.color.b / 255.0F);
 	baseLight.intensity = light.intensity;
 }
 

@@ -15,8 +15,8 @@ struct Color
 
 	explicit operator unsigned int() const;
 
+	static const Color White;
 };
-static const Color White = Color(1, 1, 1);
 
 inline Color::operator unsigned int() const
 {
