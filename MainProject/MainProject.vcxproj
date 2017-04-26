@@ -145,6 +145,7 @@
     <ClCompile Include="src\io\window.cpp" />
     <ClCompile Include="src\state\director.cpp" />
     <ClCompile Include="src\state\scene.cpp" />
+    <ClCompile Include="src\utils\color.cpp" />
     <ClCompile Include="src\utils\image.cpp" />
   </ItemGroup>
   <ItemGroup>
