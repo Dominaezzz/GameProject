@@ -3,15 +3,16 @@
 #include <string>
 #include <stdexcept>
 #include "color.h"
+#include <vector>
 
 class Image
 {
-	Color* pixels;
-	unsigned int height, width;
+	std::vector<unsigned char> pixelData;
+	unsigned int width, height, components;
 public:
-	Image(std::string file);
-	Image(unsigned int width, unsigned int height, const Color& color = Color());
-	~Image();
+	explicit Image(std::string file);
+	Image(size_t width, size_t height, const Color& color = Color());
+	unsigned char* operator &();
 	void setPixel(unsigned int x, unsigned int y, const Color& color);
-	const Color& getPixel(unsigned int x, unsigned int y) const;
+	Color getPixel(unsigned int x, unsigned int y) const;
 };
