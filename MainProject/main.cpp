@@ -86,11 +86,11 @@ void setUpLights(World& world)
 	GameObject* sun = world.newGameObject();
 	{
 		Transform* transform = sun->addComponent<Transform>();
-		transform->Rotation = Quaternion::fromAxisAngle(Vector3(1, 0, 0), M_PI + (M_PI / 6));
+		transform->Rotation = Quaternion::fromAxisAngle(Vector3(1, 0, 0), float(M_PI) * 7 / 6);
 
 		auto lightSource = sun->addComponent<Light>();
 		lightSource->lightType = LightType::Directional;
-		lightSource->color = Color(1, 1, 1);
+		lightSource->color = Color::White;
 		lightSource->intensity = 0.5f;
 	}
 
@@ -102,7 +102,7 @@ void setUpLights(World& world)
 
 		auto lightSource = lamp->addComponent<Light>();
 		lightSource->lightType = LightType::Point;
-		lightSource->color = Color(1, 1, 1);
+		lightSource->color = Color::White;
 		lightSource->intensity = 50.0f;
 		lightSource->attenuation = Attenuation(0, 1, 0);
 		lightSource->range = 500;// CalculateRange(lightSource.Attenuation, lightSource.Color, lightSource.Intensity);
@@ -113,15 +113,15 @@ void setUpLights(World& world)
 		auto transform = torchLight->addComponent<Transform>();
 		transform->Position = 2.0f * Vector3(0, 1, 0);
 //		transform->Rotation = Quaternion::fromEulerAngles(0, MathHelper.PiOver4, -2 * MathHelper.PiOver4);
-		transform->Rotation = Quaternion::fromAxisAngle(Vector3(0, 1, 0), M_PI / 4) * Quaternion::fromAxisAngle(Vector3(0, 0, 1), -2 * M_PI / 4);
+		transform->Rotation = Quaternion::fromAxisAngle(Vector3(0, 1, 0), float(M_PI_4)) * Quaternion::fromAxisAngle(Vector3(0, 0, 1), -2 * float(M_PI_4));
 
 		auto lightSource = torchLight->addComponent<Light>();
 		lightSource->lightType = LightType::Spot;
-		lightSource->color = Color(1, 1, 1);
+		lightSource->color = Color::White;
 		lightSource->intensity = 30.0f;
 		lightSource->attenuation = Attenuation(0, 1, 0);
 		lightSource->range = 100;// CalculateRange(lightSource.Attenuation, lightSource.Color, lightSource.Intensity);
-		lightSource->coneAngle = M_PI / 4;
+		lightSource->coneAngle = float(M_PI_4);
 	}
 }
 
