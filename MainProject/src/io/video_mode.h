@@ -1,12 +1,9 @@
-//
-// Created by Dominic on 17/12/2016.
-//
-
+#pragma once
 
 #include <GLFW/glfw3.h>
 
-class VideoMode {
-private:
+class VideoMode
+{
 	GLFWvidmode vidmode;
 public:
 	VideoMode();
@@ -14,7 +11,7 @@ public:
 	VideoMode(int width, int height, int refreshrate);
 	VideoMode(int width, int height, int redbits, int greenbits, int bluebits);
 	VideoMode(int width, int height, int redbits, int greenbits, int bluebits, int refreshrate);
-	VideoMode(GLFWvidmode vidmode);
+	VideoMode(const GLFWvidmode& vidmode);
 
 	/*!\brief Gets the width of the videomode
 	 * \returns the width of the videomode

@@ -1,10 +1,7 @@
-//
-// Created by Dominic on 17/12/2016.
-//
+#pragma once
 
-#include <GLFW/glfw3.h>
-
-class Time {
+class Time final
+{
 public:
 	static double get();
 	static void set(double time);

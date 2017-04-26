@@ -1,7 +1,4 @@
-//
-// Created by Dominic on 17/12/2016.
-//
-
+#include <GLFW/glfw3.h>
 #include "time.h"
 
 double Time::get() {

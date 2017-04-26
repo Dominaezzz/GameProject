@@ -21,7 +21,7 @@ VideoMode::VideoMode(int width, int height, int redbits, int greenbits, int blue
 	vidmode.refreshRate = refreshrate;
 }
 
-VideoMode::VideoMode(GLFWvidmode vidmode) : vidmode(vidmode) {}
+VideoMode::VideoMode(const GLFWvidmode& vidmode) : vidmode(vidmode) {}
 
 int VideoMode::getWidth() const {
 	return vidmode.width;
