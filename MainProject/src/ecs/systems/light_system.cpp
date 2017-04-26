@@ -22,14 +22,16 @@ void LightSystem::update(float dt)
 
 void LightSystem::setBaseLight(Lights::BaseLight& baseLight, const Light& light)
 {
-	baseLight.color = Vector3(light.color.r / 255.0F, light.color.g / 255.0F, light.color.b / 255.0F);
+	baseLight.color.x = light.color.r / 255.0F;
+	baseLight.color.y = light.color.g / 255.0F;
+	baseLight.color.z = light.color.b / 255.0F;
 	baseLight.intensity = light.intensity;
 }
 
 void LightSystem::setDirectionalLight(Lights::DirectionalLight& directionalLight, const Transform& transform, const Light& light)
 {
 	setBaseLight(directionalLight.baseLight, light);
-	directionalLight.direction = transform.getTransform().transform(Vector3(0, 1, 0), 0);
+	directionalLight.direction = transform.getTransform().transform(Vector3(0, 1, 0), 0).normalize();
 }
 
 void LightSystem::setPointLight(Lights::PointLight& pointLight, const Transform& transform, const Light& light)
@@ -43,7 +45,7 @@ void LightSystem::setPointLight(Lights::PointLight& pointLight, const Transform&
 void LightSystem::setSpotLight(Lights::SpotLight& spotLight, const Transform& transform, const Light& light)
 {
 	setPointLight(spotLight.pointLight, transform, light);
-	spotLight.direction = transform.getTransform().transform(Vector3(0, 1, 0), 0);
+	spotLight.direction = transform.getTransform().transform(Vector3(0, 1, 0), 0).normalize();
 	spotLight.cutOff = cos(light.coneAngle);
 }
 
