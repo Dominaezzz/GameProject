@@ -5,11 +5,8 @@
 #include <memory>
 #include <algorithm>
 #include "vertex_buffer.h"
+#include "../gl_type.h"
 
-struct VertexAttribute{
-	GLuint index;
-	std::shared_ptr<VertexBuffer> vertexBuffer;
-};
 
 enum VertexAttrib{
 	Position = 0,
@@ -34,7 +31,11 @@ enum VertexAttrib{
 
 class VertexArray
 {
-private:
+	struct VertexAttribute
+	{
+		GLuint index;
+		std::shared_ptr<VertexBuffer> vertexBuffer;
+	};
 	GLuint vao;
 	std::vector<VertexAttribute> vertexAttributes;
 public:
@@ -45,14 +46,17 @@ public:
 	size_t getAttributeCount() const ;
 	size_t getBufferCount() const;
 	std::shared_ptr<VertexBuffer> operator[](const int index) const;
-	template<typename T>
-	void setAttribute(std::shared_ptr<VertexBuffer> buffer, unsigned int index, GLenum type, int stride, int offset, bool normalized = false){
+	template<typename T, typename Type = float>
+	void setAttribute(std::shared_ptr<VertexBuffer> buffer, unsigned int index, int stride, int offset, bool normalized = false, bool isInstanced = false)
+	{
 		bind();
 		buffer->bind();
 		{
 			// TODO 14/1/2017 implement normalized.
 			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index, sizeof(T) / sizeof(float), type, GL_FALSE/**(GLboolean) normalized**/, stride, (void *)(offset));
+			glVertexAttribPointer(index, sizeof(T) / sizeof(float), GLType<Type>(), GL_FALSE, stride, (void *)(offset));
+//			glVertexAttribPointer(index, sizeof(T) / sizeof(float), GLType<Type>(), normalized ? GL_TRUE : GL_FALSE, stride, (void *)(offset));
+			if (isInstanced) glVertexAttribDivisor(index, 1);
 
 			VertexAttribute attribute;
 			attribute.index = index;

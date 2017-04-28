@@ -3,10 +3,7 @@
 #include <GL/glew.h>
 #include <functional>
 #include <array>
-
-template<typename T> struct GLType { operator GLenum() const { return 0; } };
-template<> struct GLType<float> { operator GLenum() const { return GL_FLOAT; } };
-template<> struct GLType<unsigned char> { operator GLenum() const { return GL_UNSIGNED_BYTE; } };
+#include "../gl_type.h"
 
 enum PixelFormat : GLenum
 {

@@ -4,21 +4,24 @@ Mesh::Mesh() {}
 
 Mesh::~Mesh() {}
 
-void Mesh::bind() {
+void Mesh::bind() const
+{
 	vertexArray.bind();
 	if (indexBuffer.getCount() > 0) {
 		indexBuffer.bind();
 	}
 }
 
-void Mesh::unBind() {
+void Mesh::unBind() const
+{
 	vertexArray.unBind();
 	if (indexBuffer.getCount() > 0) {
 		indexBuffer.unBind();
 	}
 }
 
-void Mesh::render(GLenum mode, GLuint offset, int count, bool autoBind) {
+void Mesh::render(GLenum mode, GLuint offset, int count, bool autoBind) const
+{
 	if (count == 0 || vertexArray.getBufferCount() == 0)return;
 
 	if (autoBind)bind();
@@ -35,7 +38,8 @@ void Mesh::render(GLenum mode, GLuint offset, int count, bool autoBind) {
 	if (autoBind)unBind();
 }
 
-void Mesh::renderInstanced(GLenum mode, GLsizei instances, GLuint offset, GLsizei count, bool autoBind) {
+void Mesh::renderInstanced(GLenum mode, GLsizei instances, GLuint offset, GLsizei count, bool autoBind) const
+{
 	if (count == 0 || vertexArray.getBufferCount() == 0)return;
 
 	if (autoBind)bind();
@@ -50,4 +54,14 @@ void Mesh::renderInstanced(GLenum mode, GLsizei instances, GLuint offset, GLsize
 		}
 	}
 	if (autoBind)unBind();
+}
+
+void Mesh::setIndices(const int* data, size_t size)
+{
+	indexBuffer.setData(data, size);
+}
+
+size_t Mesh::getBufferCount() const
+{
+	return vertexArray.getBufferCount();
 }
