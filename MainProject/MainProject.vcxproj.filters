@@ -99,6 +99,9 @@
     <ClCompile Include="src\utils\color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ecs\systems\particle_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\vector.h">
@@ -233,6 +236,15 @@
     <ClInclude Include="src\graphics\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ecs\systems\particle_system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\particle_emitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\gl_type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\shaders\main.frag" />
@@ -275,6 +287,21 @@
     <Image Include="res\Terrain\path.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\Particle\cosmic.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Particle\fire.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Particle\particleAtlas.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Particle\particleStar.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Particle\smoke.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Generic\skyBox.vert" />
@@ -297,5 +324,8 @@
     <None Include="res\shaders\Modular\specular.frag" />
     <None Include="res\shaders\Modular\specularMap.frag" />
     <None Include="res\shaders\Modular\static.vert" />
+    <None Include="res\shaders\Generic\math.glsl" />
+    <None Include="res\shaders\Particle\particle.frag" />
+    <None Include="res\shaders\Particle\particle.vert" />
   </ItemGroup>
 </Project>

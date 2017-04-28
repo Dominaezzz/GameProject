@@ -127,6 +127,7 @@
     <ClCompile Include="src\ecs\system.cpp" />
     <ClCompile Include="src\ecs\systems\camera_system.cpp" />
     <ClCompile Include="src\ecs\systems\light_system.cpp" />
+    <ClCompile Include="src\ecs\systems\particle_system.cpp" />
     <ClCompile Include="src\ecs\systems\terrain_system.cpp" />
     <ClCompile Include="src\ecs\world.cpp" />
     <ClCompile Include="src\graphics\buffers\index_buffer.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="src\ecs\component.h" />
     <ClInclude Include="src\ecs\components\camera.h" />
     <ClInclude Include="src\ecs\components\light.h" />
+    <ClInclude Include="src\ecs\components\particle_emitter.h" />
     <ClInclude Include="src\ecs\components\terrain.h" />
     <ClInclude Include="src\ecs\components\tranform.h" />
     <ClInclude Include="src\ecs\component_type.h" />
@@ -162,6 +164,7 @@
     <ClInclude Include="src\ecs\system.h" />
     <ClInclude Include="src\ecs\systems\camera_system.h" />
     <ClInclude Include="src\ecs\systems\light_system.h" />
+    <ClInclude Include="src\ecs\systems\particle_system.h" />
     <ClInclude Include="src\ecs\systems\terrain_system.h" />
     <ClInclude Include="src\ecs\world.h" />
     <ClInclude Include="src\graphics\buffers\buffer.h" />
@@ -170,6 +173,7 @@
     <ClInclude Include="src\graphics\buffers\vertex_array.h" />
     <ClInclude Include="src\graphics\buffers\vertex_buffer.h" />
     <ClInclude Include="src\graphics\gl_resource.h" />
+    <ClInclude Include="src\graphics\gl_type.h" />
     <ClInclude Include="src\graphics\mesh.h" />
     <ClInclude Include="src\graphics\shader.h" />
     <ClInclude Include="src\graphics\shaderprogram.h" />
@@ -210,6 +214,11 @@
     <Image Include="res\images\Cover.jpg">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="res\Particle\cosmic.png" />
+    <Image Include="res\Particle\fire.png" />
+    <Image Include="res\Particle\particleAtlas.png" />
+    <Image Include="res\Particle\particleStar.png" />
+    <Image Include="res\Particle\smoke.png" />
     <Image Include="res\SkyBox\back.png" />
     <Image Include="res\SkyBox\bottom.png" />
     <Image Include="res\SkyBox\front.png" />
@@ -223,6 +232,7 @@
     <Image Include="res\Terrain\path.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\Generic\math.glsl" />
     <None Include="res\shaders\Generic\skyBox.frag" />
     <None Include="res\shaders\Generic\skyBox.vert" />
     <None Include="res\shaders\Generic\terrainDiffuse.frag" />
@@ -243,6 +253,8 @@
     <None Include="res\shaders\Modular\specular.frag" />
     <None Include="res\shaders\Modular\specularMap.frag" />
     <None Include="res\shaders\Modular\static.vert" />
+    <None Include="res\shaders\Particle\particle.frag" />
+    <None Include="res\shaders\Particle\particle.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

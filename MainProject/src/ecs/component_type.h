@@ -6,6 +6,7 @@
 #include "components/camera.h"
 #include "components/light.h"
 #include "components/terrain.h"
+#include "components/particle_emitter.h"
 
 template<typename ComponentClass>
 struct ComponentType
@@ -50,5 +51,14 @@ struct ComponentType<Terrain>
 	operator int() const
 	{
 		return 1 << 3;
+	}
+};
+
+template<>
+struct ComponentType<ParticleEmitter>
+{
+	operator int() const
+	{
+		return 1 << 4;
 	}
 };

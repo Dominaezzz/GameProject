@@ -30,7 +30,7 @@ CameraSystem::CameraSystem(World* world) : System(world)
 	
 	auto buffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
 
-	skyBoxMesh.setVertexAttribute<Vector3>(buffer, 0, GL_FLOAT, sizeof(Vector3), 0);
+	skyBoxMesh.setVertexAttribute<Vector3>(buffer, VertexAttrib::Position, sizeof(Vector3), 0);
 	skyBoxMesh.setIndices(indices, sizeof(indices));
 
 	skyBoxShader.add(ShaderType::VertexShader, "res/shaders/Generic/skyBox.vert");

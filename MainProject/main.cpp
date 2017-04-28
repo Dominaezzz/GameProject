@@ -14,6 +14,7 @@
 #include "src/ecs/systems/camera_system.h"
 #include "src/ecs/systems/light_system.h"
 #include "src/ecs/systems/terrain_system.h"
+#include "src/ecs/systems/particle_system.h"
 
 void old_picture_render(Window& window)
 {
@@ -38,7 +39,6 @@ void old_picture_render(Window& window)
 	mesh.setVertexAttribute<Vector2>(
 		std::make_shared<VertexBuffer>(positions, sizeof(positions), BufferUsage::StaticDraw),
 		shader.getAttributeLocation("position"),
-		GL_FLOAT,
 		sizeof(Vector2),
 		0
 		);
@@ -125,9 +125,96 @@ void setUpLights(World& world)
 	}
 }
 
+void setUpParticleEffects(World& world)
+{
+	GameObject* fire = world.newGameObject();
+	{
+		auto tranform = fire->addComponent<Transform>();
+		tranform->Position = Vector3(-150, 0, 100);
+
+		auto particleEmitter = fire->addComponent<ParticleEmitter>();
+		particleEmitter->emitterShape = Source::Circle;
+		particleEmitter->emitterSize = 200;
+		particleEmitter->texture = Texture2D::fromFile("res/Particle/fire.png");
+		particleEmitter->rows = 8;
+		particleEmitter->offset = 0;
+		
+		particleEmitter->isAdditive = true;
+		particleEmitter->emissionRate = 1000;
+		particleEmitter->speed = 5;
+		particleEmitter->speedDeviation = 1;
+		particleEmitter->lifeTime = 10;// 3f;
+
+		particleEmitter->direction = Vector3(0, 1, 0);
+		//particleEmitter.DirectionDeviation = new Vector3(MathHelper.PiOver6);
+	}
+
+//	GameObject* magic = world.newGameObject();
+//	{
+//		auto transform = magic->addComponent<Transform>();
+//		transform->Position = Vector3(-Terrain::Size / 2.0f, 0, -Terrain::Size / 2.0f);// -60);
+//
+//		auto particleEmitter = magic->addComponent<ParticleEmitter>();
+//		particleEmitter->emitterShape = Source::Plane;
+//		particleEmitter->emitterSize = Terrain::Size;
+//		particleEmitter->texture = Texture2D::fromFile("Content/Particle/cosmic.png");
+//		particleEmitter->rows = 4;
+//		particleEmitter->offset = 0;
+//
+//		//particleEmitter.IsAdditive = true;
+//		particleEmitter->emissionRate = 1000;
+//		particleEmitter->speed = 10;
+//		particleEmitter->speedDeviation = 1;
+//		particleEmitter->lifeTime = 1;// 3f;
+//
+//		particleEmitter->direction = Vector3(0, 1, 0);
+//	}
+//
+//	GameObject* stars = world.newGameObject();
+//	{
+//		auto transform = stars->addComponent<Transform>();
+//		transform->Position = Vector3(-Terrain::Size / 2.0f, 200, -Terrain::Size / 2.0f);
+//
+//		auto particleEmitter = stars->addComponent<ParticleEmitter>();
+//		particleEmitter->emitterShape = Source::Point;
+//		particleEmitter->texture = Texture2D::fromFile("Content/Particle/particleStar.png");
+//		particleEmitter->rows = 1;
+//		particleEmitter->offset = 0;
+//
+//		particleEmitter->isAdditive = true;
+//		particleEmitter->emissionRate = 1000;
+//		particleEmitter->speed = 50;
+//		particleEmitter->speedDeviation = 1;
+//		particleEmitter->lifeTime = 1;
+//	}
+//
+//	GameObject* atlas = world.newGameObject();
+//	{
+//		auto transform = atlas->addComponent<Transform>();
+//		transform->Position = Vector3(0, 0, -Terrain::Size / 2.0f);
+//
+//		auto particleEmitter = atlas->addComponent<ParticleEmitter>();
+//		particleEmitter->emitterShape = Source::Line;
+//		particleEmitter->emitterSize = Terrain::Size;
+//		particleEmitter->texture = Texture2D::fromFile("Content/Particle/particleAtlas.png");
+//		particleEmitter->rows = 4;
+//		particleEmitter->offset = 0;
+//
+//		particleEmitter->isAdditive = true;
+//		particleEmitter->emissionRate = 1000;
+//		particleEmitter->speed = 5;
+//		particleEmitter->speedDeviation = 1;
+//		particleEmitter->lifeTime = 10;// 3f;
+//
+//		particleEmitter->direction = Vector3(0, 1, 0);
+//		//particleEmitter.DirectionDeviation = new Vector3(MathHelper.PiOver6);
+//	}
+}
+
 int main() {
 
 	Window window("Main Window", 1080, 720);
+	window.setSwapInterval(0);
 
 	std::cout << "OpenGL " << glGetString(GL_VERSION) << std::endl << std::endl;
 
@@ -144,6 +231,7 @@ int main() {
 	world.addSystem<CameraSystem>();
 	world.addSystem<LightSystem>();
 	world.addSystem<TerrainSystem>();
+	world.addSystem<ParticleSystem>();
 
 	auto worldCamera = world.newGameObject();
 	auto camTransform = worldCamera->addComponent<Transform>();
@@ -167,6 +255,7 @@ int main() {
 	camera->viewportHeight = window.getHeight();
 
 	setUpLights(world);
+	setUpParticleEffects(world);
 
 	auto ground = world.newGameObject();
 	{

@@ -16,19 +16,19 @@ public:
 	size_t size() { return nodes.size(); }
 	NodeClass& operator[](size_t index) { return nodes[index]; }
 	const NodeClass& operator[](size_t index) const { return nodes[index]; }
-	typename std::vector<NodeClass>::iterator begin()
+	auto begin() -> decltype(nodes.begin())
 	{
 		return nodes.begin();
 	}
-	typename std::vector<NodeClass>::iterator begin() const
+	auto begin() const -> decltype(nodes.begin())
 	{
 		return nodes.begin();
 	}
-	typename std::vector<NodeClass>::iterator end()
+	auto end() -> decltype(nodes.end())
 	{
 		return nodes.end();
 	}
-	typename std::vector<NodeClass>::iterator& end() const
+	auto end() const -> decltype(nodes.end())
 	{
 		return nodes.end();
 	}
