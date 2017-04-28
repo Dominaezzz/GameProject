@@ -57,6 +57,12 @@ struct TQuaternion
 		result.xyz *= sin(angle / 2);
 		return result.normalize();
 	}
+	static TQuaternion<T> fromEulerAngles(T pitch, T yaw, T roll)
+	{
+		return TQuaternion::fromAxisAngle(Vector<3, T>(1, 0, 0), pitch) *
+			TQuaternion::fromAxisAngle(Vector<3, T>(0, 1, 0), yaw) *
+			TQuaternion::fromAxisAngle(Vector<3, T>(0, 0, 1), roll);
+	}
 	static TQuaternion<T> slerp(const TQuaternion<T>& q1, const TQuaternion<T>& q2, T blend) {
 		// if either input is zero, return the other.
 		if (q1.lengthSquared() == 0)
