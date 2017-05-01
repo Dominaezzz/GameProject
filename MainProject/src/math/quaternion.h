@@ -20,21 +20,21 @@ struct TQuaternion
 		};
 	};
 
-	TQuaternion() : TQuaternion(0, 0, 0, 1) {}
-	TQuaternion(const T x, const T y, const T z, const T _w) : xyz(x, y, z), w(_w) {}
-	TQuaternion(const Vector<3, T>& _xyz, const T _w) : xyz(_xyz), w(_w) {}
-	explicit TQuaternion(const Vector<4, T>& _xyzw) : xyzw(_xyzw) {}
+	constexpr TQuaternion() : TQuaternion(0, 0, 0, 1) {}
+	constexpr TQuaternion(const T x, const T y, const T z, const T _w) : xyz(x, y, z), w(_w) {}
+	constexpr TQuaternion(const Vector<3, T>& _xyz, const T _w) : xyz(_xyz), w(_w) {}
+	constexpr explicit TQuaternion(const Vector<4, T>& _xyzw) : xyzw(_xyzw) {}
 
-	T lengthSquared() const { return xyzw.lengthSquared(); }
-	T length() const { return xyzw.length(); }
+	constexpr T lengthSquared() const { return xyzw.lengthSquared(); }
+	constexpr T length() const { return xyzw.length(); }
 
-	TQuaternion<T>& normalize() { xyzw.normalize(); return *this; }
-	TQuaternion<T> normalized() const { return TQuaternion<T>(xyzw).normalize(); }
-	TQuaternion<T>& conjugate() { xyz = -xyz; return *this; }
-	TQuaternion<T> conjugated() const { return TQuaternion<T>(xyzw).conjugate(); }
-	TQuaternion<T>& invert() { return conjugate() /= lengthSquared(); }
-	TQuaternion<T> inverted() const { return TQuaternion<T>(xyzw).invert(); }
-	void toAxisAngle(Vector<3, T>& axis, T& angle) const {
+	constexpr TQuaternion<T>& normalize() { xyzw.normalize(); return *this; }
+	constexpr TQuaternion<T> normalized() const { return TQuaternion<T>(xyzw).normalize(); }
+	constexpr TQuaternion<T>& conjugate() { xyz = -xyz; return *this; }
+	constexpr TQuaternion<T> conjugated() const { return TQuaternion<T>(xyzw).conjugate(); }
+	constexpr TQuaternion<T>& invert() { return conjugate() /= lengthSquared(); }
+	constexpr TQuaternion<T> inverted() const { return TQuaternion<T>(xyzw).invert(); }
+	constexpr void toAxisAngle(Vector<3, T>& axis, T& angle) const {
 		TQuaternion q = *this;
 		if (abs(q.w) > 1) q.normalize();
 
@@ -50,20 +50,20 @@ struct TQuaternion
 			axis.z = 0;
 		}
 	}
-	static TQuaternion<T> fromAxisAngle(const Vector<3, T>& axis, const T angle)
+	constexpr static TQuaternion<T> fromAxisAngle(const Vector<3, T>& axis, const T angle)
 	{
 		TQuaternion<T> result(axis, cos(angle / 2));
 		result.xyz.normalize();
 		result.xyz *= sin(angle / 2);
 		return result.normalize();
 	}
-	static TQuaternion<T> fromEulerAngles(T pitch, T yaw, T roll)
+	constexpr static TQuaternion<T> fromEulerAngles(T pitch, T yaw, T roll)
 	{
 		return TQuaternion::fromAxisAngle(Vector<3, T>(1, 0, 0), pitch) *
 			TQuaternion::fromAxisAngle(Vector<3, T>(0, 1, 0), yaw) *
 			TQuaternion::fromAxisAngle(Vector<3, T>(0, 0, 1), roll);
 	}
-	static TQuaternion<T> slerp(const TQuaternion<T>& q1, const TQuaternion<T>& q2, T blend) {
+	constexpr static TQuaternion<T> slerp(const TQuaternion<T>& q1, const TQuaternion<T>& q2, T blend) {
 		// if either input is zero, return the other.
 		if (q1.lengthSquared() == 0)
 		{
@@ -110,19 +110,19 @@ struct TQuaternion
 };
 
 template<typename T>
-TQuaternion<T>& operator+=(TQuaternion<T>& lhs, const TQuaternion<T>& rhs) {
+constexpr TQuaternion<T>& operator+=(TQuaternion<T>& lhs, const TQuaternion<T>& rhs) {
 	lhs.xyzw += rhs.xyzw;
 	return lhs;
 }
 
 template<typename T>
-TQuaternion<T>& operator-=(TQuaternion<T>& lhs, const TQuaternion<T>& rhs) {
+constexpr TQuaternion<T>& operator-=(TQuaternion<T>& lhs, const TQuaternion<T>& rhs) {
 	lhs.xyzw -= rhs.xyzw;
 	return lhs;
 }
 
 template<typename T>
-TQuaternion<T>& operator*=(TQuaternion<T>& lhs, const TQuaternion<T>& rhs) {
+constexpr TQuaternion<T>& operator*=(TQuaternion<T>& lhs, const TQuaternion<T>& rhs) {
 	T tempW = (lhs.w * rhs.w) - vec::dot(lhs.xyz, rhs.xyz);
 	lhs.xyz = (rhs.w * lhs.xyz) + (lhs.w * rhs.xyz) + vec::cross(lhs.xyz, rhs.xyz);
 	lhs.w = tempW;
@@ -130,55 +130,55 @@ TQuaternion<T>& operator*=(TQuaternion<T>& lhs, const TQuaternion<T>& rhs) {
 }
 
 template<typename T>
-TQuaternion<T>& operator*=(TQuaternion<T>& lhs, const T rhs) {
+constexpr TQuaternion<T>& operator*=(TQuaternion<T>& lhs, const T rhs) {
 	lhs.xyzw *= rhs;
 	return lhs;
 }
 
 template<typename T>
-TQuaternion<T>& operator/=(TQuaternion<T>& lhs, const T rhs) {
+constexpr TQuaternion<T>& operator/=(TQuaternion<T>& lhs, const T rhs) {
 	lhs.xyzw /= rhs;
 	return lhs;
 }
 
 template<typename T>
-TQuaternion<T> operator+(TQuaternion<T> lhs, const TQuaternion<T>& rhs) {
+constexpr TQuaternion<T> operator+(TQuaternion<T> lhs, const TQuaternion<T>& rhs) {
 	lhs += rhs;
 	return lhs;
 }
 
 template<typename T>
-TQuaternion<T> operator-(TQuaternion<T> lhs, const TQuaternion<T>& rhs) {
+constexpr TQuaternion<T> operator-(TQuaternion<T> lhs, const TQuaternion<T>& rhs) {
 	lhs -= rhs;
 	return lhs;
 }
 
 template<typename T>
-TQuaternion<T> operator*(TQuaternion<T> lhs, const TQuaternion<T>& rhs) {
+constexpr TQuaternion<T> operator*(TQuaternion<T> lhs, const TQuaternion<T>& rhs) {
 	lhs *= rhs;
 	return lhs;
 }
 
 template<typename T>
-TQuaternion<T> operator*(TQuaternion<T> lhs, const T rhs) {
+constexpr TQuaternion<T> operator*(TQuaternion<T> lhs, const T rhs) {
 	lhs *= rhs;
 	return lhs;
 }
 
 template<typename T>
-TQuaternion<T> operator/(TQuaternion<T> lhs, const T rhs) {
+constexpr TQuaternion<T> operator/(TQuaternion<T> lhs, const T rhs) {
 	lhs /= rhs;
 	return lhs;
 }
 
 template<typename T>
-TQuaternion<T> operator-(TQuaternion<T> lhs) { 
+constexpr TQuaternion<T> operator-(TQuaternion<T> lhs) {
 	lhs.xyzw = -lhs.xyzw;
 	return lhs;
 }
 
 template<typename T>
-Vector<3, T> operator*(const TQuaternion<T>& lhs, const Vector<3, T>& rhs) {
+constexpr Vector<3, T> operator*(const TQuaternion<T>& lhs, const Vector<3, T>& rhs) {
 	// Since rhs.W == 0, we can optimize quat * rhs * quat^-1 as follows:
 	// rhs + 2.0 * cross(quat.xyz, cross(quat.xyz, rhs) + quat.w * rhs)
 

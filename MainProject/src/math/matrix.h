@@ -98,8 +98,9 @@ struct Matrix : public math::TMatrix<T, rows, ncolumns> {
 		T data[rows * ncolumns];
 		Vector<rows, T> columns[ncolumns];
 	};
-	Matrix() = default;
-	explicit Matrix(T diagonal) {
+	
+	constexpr Matrix() = default;
+	constexpr explicit Matrix(T diagonal) {
 		for (size_t row = 0; row < rows; row++)
 		{
 			for (size_t column = 0; column < ncolumns; column++)
@@ -109,7 +110,7 @@ struct Matrix : public math::TMatrix<T, rows, ncolumns> {
 		}
 	}
 
-	explicit Matrix(const T _data[rows * ncolumns]) {
+	constexpr explicit Matrix(const T _data[rows * ncolumns]) {
 		for (size_t i = 0; i < rows * ncolumns; i++)
 		{
 			data[i] = _data[i];
@@ -130,11 +131,11 @@ struct Matrix<2, 2, T> : public math::TMatrix<T, 2, 2> {
 		};
 	};
 
-	Matrix() : Matrix(1) {}
-	explicit Matrix(T diagonal) : m00(diagonal), m01(0), m10(0), m11(diagonal) {}
-	Matrix(T _00, T _01, T _10, T _11) : m00(_00), m01(_01), m10(_10), m11(_11) {}
+	constexpr Matrix() : Matrix(1) {}
+	constexpr explicit Matrix(T diagonal) : m00(diagonal), m01(0), m10(0), m11(diagonal) {}
+	constexpr Matrix(T _00, T _01, T _10, T _11) : m00(_00), m01(_01), m10(_10), m11(_11) {}
 
-	Matrix<2, 2, T> inverted() const {
+	constexpr Matrix<2, 2, T> inverted() const {
 		T determinant = (m00 * m11) - (m01 * m10);
 		if (determinant != 0)
 		{
@@ -145,11 +146,11 @@ struct Matrix<2, 2, T> : public math::TMatrix<T, 2, 2> {
 		}
 		throw std::logic_error("Cannot invert singular matrix");
 	}
-	Matrix<2, 2, T>& invert() {
+	constexpr Matrix<2, 2, T>& invert() {
 		return (*this) = inverted();
 	}
 
-	static Matrix<2, 2, T> rotateZ(const T angle) {
+	constexpr static Matrix<2, 2, T> rotateZ(const T angle) {
 		T s = sin(angle);
 		T c = cos(angle);
 
@@ -158,7 +159,7 @@ struct Matrix<2, 2, T> : public math::TMatrix<T, 2, 2> {
 			s, c
 			);
 	}
-	static Matrix<2, 2, T> scale(const Vector<2, T>& vector) {
+	constexpr static Matrix<2, 2, T> scale(const Vector<2, T>& vector) {
 		return Matrix<2, 2, T>(
 			vector.x, 0,
 			0, vector.y
@@ -179,12 +180,12 @@ struct Matrix<3, 3, T> : public math::TMatrix<T, 3, 3> {
 		};
 	};
 
-	Matrix() : Matrix(1) {}
-	explicit Matrix(T diagonal) :
+	constexpr Matrix() : Matrix(1) {}
+	constexpr explicit Matrix(T diagonal) :
 		m00(diagonal), m01(0), m02(0),
 		m10(0), m11(diagonal), m12(0),
 		m20(0), m21(0), m22(diagonal) {}
-	Matrix(
+	constexpr Matrix(
 		T _00, T _01, T _02,
 		T _10, T _11, T _12,
 		T _20, T _21, T _22
@@ -192,7 +193,7 @@ struct Matrix<3, 3, T> : public math::TMatrix<T, 3, 3> {
 		m10(_10), m11(_11), m12(_12),
 		m20(_20), m21(_21), m22(_22) {}
 
-	T determinant() const {
+	constexpr T determinant() const {
 		T d = 0;
 
 		//either this
@@ -210,7 +211,7 @@ struct Matrix<3, 3, T> : public math::TMatrix<T, 3, 3> {
 
 		return d;
 	}
-	Matrix inverted() const {
+	constexpr Matrix inverted() const {
 		T d = determinant();
 		if (d != 0)
 		{
@@ -231,11 +232,11 @@ struct Matrix<3, 3, T> : public math::TMatrix<T, 3, 3> {
 		}
 		throw std::logic_error("Cannot invert singular matrix");
 	}
-	Matrix& invert() {
+	constexpr Matrix& invert() {
 		return *this = inverted();
 	}
 
-	static Matrix rotate(const Vector<3, T>& vector, const T angle) {
+	constexpr static Matrix rotate(const Vector<3, T>& vector, const T angle) {
 		T s = sin(angle);
 		T c = cos(angle);
 
@@ -247,7 +248,7 @@ struct Matrix<3, 3, T> : public math::TMatrix<T, 3, 3> {
 			(vector.x * vector.z)*(1 - c) - (vector.y * s), (vector.y * vector.z)*(1 - c) + (vector.x * s), (vector.z * vector.z)*(1 - c) + c
 		);
 	}
-	static Matrix rotateX(const T angle) {
+	constexpr static Matrix rotateX(const T angle) {
 		T s = sin(angle);
 		T c = cos(angle);
 
@@ -257,7 +258,7 @@ struct Matrix<3, 3, T> : public math::TMatrix<T, 3, 3> {
 			0, s, c
 		);
 	}
-	static Matrix rotateY(const T angle) {
+	constexpr static Matrix rotateY(const T angle) {
 		T s = sin(angle);
 		T c = cos(angle);
 
@@ -267,7 +268,7 @@ struct Matrix<3, 3, T> : public math::TMatrix<T, 3, 3> {
 			-s, 0, c
 		);
 	}
-	static Matrix rotateZ(const T angle) {
+	constexpr static Matrix rotateZ(const T angle) {
 		T s = sin(angle);
 		T c = cos(angle);
 
@@ -277,7 +278,7 @@ struct Matrix<3, 3, T> : public math::TMatrix<T, 3, 3> {
 			0, 0, 1
 		);
 	}
-	static Matrix scale(const Vector<3, T>& vector) {
+	constexpr static Matrix scale(const Vector<3, T>& vector) {
 		return Matrix(
 			vector.x, 0, 0,
 			0, vector.y, 0,
@@ -301,13 +302,13 @@ struct Matrix<4, 4, T> : public math::TMatrix<T, 4, 4> {
 		};
 	};
 
-	Matrix() : Matrix(1) {}
-	explicit Matrix(T diagonal) :
+	constexpr Matrix() : Matrix(1) {}
+	constexpr explicit Matrix(T diagonal) :
 		m00(diagonal), m01(0), m02(0), m03(0),
 		m10(0), m11(diagonal), m12(0), m13(0),
 		m20(0), m21(0), m22(diagonal), m23(0),
 		m30(0), m31(0), m32(0), m33(diagonal) {}
-	Matrix(
+	constexpr Matrix(
 		T _00, T _01, T _02, T _03,
 		T _10, T _11, T _12, T _13,
 		T _20, T _21, T _22, T _23,
@@ -318,12 +319,12 @@ struct Matrix<4, 4, T> : public math::TMatrix<T, 4, 4> {
 		m30(_30), m31(_31), m32(_32), m33(_33) {}
 
 private:
-	static T determinant3x3(T t00, T t01, T t02, T t10, T t11, T t12, T t20, T t21, T t22)
+	constexpr static T determinant3x3(T t00, T t01, T t02, T t10, T t11, T t12, T t20, T t21, T t22)
 	{
 		return t00 * (t11 * t22 - t12 * t21) + t01 * (t12 * t20 - t10 * t22) + t02 * (t10 * t21 - t11 * t20);
 	}
 public:
-	T determinant() const {
+	constexpr T determinant() const {
 		T f = (*this)(0, 0) * (
 			+(*this)(1, 1) * (*this)(2, 2) * (*this)(3, 3)
 			+ (*this)(1, 2) * (*this)(2, 3) * (*this)(3, 1)
@@ -362,7 +363,7 @@ public:
 
 		return f;
 	}
-	Matrix<4, 4, T> inverted() const {
+	constexpr Matrix<4, 4, T> inverted() const {
 		T d = determinant();
 		if (d != 0)
 		{
@@ -392,11 +393,11 @@ public:
 		}
 		throw std::logic_error("Cannot invert singular matrix");
 	}
-	Matrix<4, 4, T>& invert() {
+	constexpr Matrix<4, 4, T>& invert() {
 		return (*this) = inverted();
 	}
 
-	static Matrix<4, 4, T> translate(const Vector<3, T>& vector) {
+	constexpr static Matrix<4, 4, T> translate(const Vector<3, T>& vector) {
 		return Matrix<4, 4, T>(
 			1, 0, 0, vector.x,
 			0, 1, 0, vector.y,
@@ -404,7 +405,7 @@ public:
 			0, 0, 0, 1
 		);
 	}
-	static Matrix<4, 4, T> rotate(const Vector<3, T>& vector, const T angle) {
+	constexpr static Matrix<4, 4, T> rotate(const Vector<3, T>& vector, const T angle) {
 		T s = sin(angle);
 		T c = cos(angle);
 
@@ -418,7 +419,7 @@ public:
 			0, 0, 0, 1
 		);
 	}
-	static Matrix<4, 4, T> rotateX(const T angle) {
+	constexpr static Matrix<4, 4, T> rotateX(const T angle) {
 		T s = sin(angle);
 		T c = cos(angle);
 
@@ -429,7 +430,7 @@ public:
 			0, 0, 0, 1
 			);
 	}
-	static Matrix<4, 4, T> rotateY(const T angle) {
+	constexpr static Matrix<4, 4, T> rotateY(const T angle) {
 		T s = sin(angle);
 		T c = cos(angle);
 
@@ -440,7 +441,7 @@ public:
 			0, 0, 0, 1
 			);
 	}
-	static Matrix<4, 4, T> rotateZ(const T angle) {
+	constexpr static Matrix<4, 4, T> rotateZ(const T angle) {
 		T s = sin(angle);
 		T c = cos(angle);
 
@@ -451,14 +452,14 @@ public:
 			0, 0, 0, 1
 			);
 	}
-	static Matrix<4, 4, T> createFromQuaternion(const TQuaternion<T>& quaternion)
+	constexpr static Matrix<4, 4, T> createFromQuaternion(const TQuaternion<T>& quaternion)
 	{
 		Vector<3, T> axis;
 		T angle;
 		quaternion.toAxisAngle(axis, angle);
 		return rotate(axis, angle);
 	}
-	static Matrix<4, 4, T> scale(const Vector<3, T>& vector) {
+	constexpr static Matrix<4, 4, T> scale(const Vector<3, T>& vector) {
 		return Matrix<4, 4, T>(
 			vector.x, 0, 0, 0,
 			0, vector.y, 0, 0,
@@ -466,7 +467,7 @@ public:
 			0, 0, 0, 1
 			);
 	}
-	static Matrix<4, 4, T> perspective(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) {
+	constexpr static Matrix<4, 4, T> perspective(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) {
 		T x = (2 * zNear) / (right - left);
 		T y = (2 * zNear) / (top - bottom);
 		T a = (right + left) / (right - left);
@@ -481,7 +482,7 @@ public:
 			0, 0, -1, 0
 		);
 	}
-	static Matrix<4, 4, T> perspective(const T fovy, const T aspect, const T zNear, const T zFar) {
+	constexpr static Matrix<4, 4, T> perspective(const T fovy, const T aspect, const T zNear, const T zFar) {
 		T yMax = zNear * tan(fovy / 2);
 		T yMin = -yMax;
 		T xMin = yMin * aspect;
@@ -489,7 +490,7 @@ public:
 
 		return perspective(xMin, xMax, yMin, yMax, zNear, zFar);
 	}
-	static Matrix<4, 4, T> orthographic(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) {
+	constexpr static Matrix<4, 4, T> orthographic(const T left, const T right, const T bottom, const T top, const T zNear, const T zFar) {
 		T invX = 1 / (right - left);
 		T invY = 1 / (top - bottom);
 		T invZ = 1 / (zFar - zNear);
@@ -501,10 +502,10 @@ public:
 			0, 0, 0, 1
 			);
 	}
-	static Matrix<4, 4, T> orthographic(const T width, const T height, const T zNear, const T zFar) {
+	constexpr static Matrix<4, 4, T> orthographic(const T width, const T height, const T zNear, const T zFar) {
 		return orthographic(-width / 2, width / 2, -height / 2, height / 2, zNear, zFar);
 	}
-	static Matrix<4, 4, T> lookAt(const Vector<3, T>& eye, const Vector<3, T>& target, const Vector<3, T>& up) {
+	constexpr static Matrix<4, 4, T> lookAt(const Vector<3, T>& eye, const Vector<3, T>& target, const Vector<3, T>& up) {
 		Vector<3, T> cameraZ = (eye - target).normalized();
 		Vector<3, T> cameraX = Vector<3, T>::cross(up, cameraZ).normalized();
 		Vector<3, T> cameraY = Vector<3, T>::cross(cameraZ, cameraX).normalized();
@@ -617,7 +618,7 @@ public:
 };
 
 template<typename T, size_t rows, size_t columns>
-bool operator==(const Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
+constexpr bool operator==(const Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
 	for (size_t i = 0; i < columns; i++)
 	{
 		if (lhs[i] != rhs[i])return false;
@@ -626,7 +627,7 @@ bool operator==(const Matrix<rows, columns, T>& lhs, const Matrix<rows, columns,
 }
 
 template<typename T, size_t rows, size_t columns>
-bool operator!=(const Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
+constexpr bool operator!=(const Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
 	for (size_t i = 0; i < columns; i++)
 	{
 		if (lhs[i] != rhs[i])return true;
@@ -635,7 +636,7 @@ bool operator!=(const Matrix<rows, columns, T>& lhs, const Matrix<rows, columns,
 }
 
 template<typename T, size_t rows, size_t columns>
-Matrix<rows, columns, T>& operator+=(Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
+constexpr Matrix<rows, columns, T>& operator+=(Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
 	for (int i = 0; i < columns; ++i) {
 		lhs[i] += rhs[i];
 	}
@@ -643,7 +644,7 @@ Matrix<rows, columns, T>& operator+=(Matrix<rows, columns, T>& lhs, const Matrix
 }
 
 template<typename T, size_t rows, size_t columns>
-Matrix<rows, columns, T>& operator-=(Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
+constexpr Matrix<rows, columns, T>& operator-=(Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
 	for (int i = 0; i < columns; ++i) {
 		lhs[i] -= rhs;
 	}
@@ -651,7 +652,7 @@ Matrix<rows, columns, T>& operator-=(Matrix<rows, columns, T>& lhs, const Matrix
 }
 
 template<typename T, size_t rows, size_t columns>
-Matrix<rows, columns, T>& operator*=(Matrix<rows, columns, T>& lhs, const T rhs) {
+constexpr Matrix<rows, columns, T>& operator*=(Matrix<rows, columns, T>& lhs, const T rhs) {
 	for (size_t i = 0; i < columns; i++)
 	{
 		lhs[i] *= rhs;
@@ -660,7 +661,7 @@ Matrix<rows, columns, T>& operator*=(Matrix<rows, columns, T>& lhs, const T rhs)
 }
 
 template<typename T, size_t rows, size_t columns>
-Matrix<rows, columns, T>& operator/=(Matrix<rows, columns, T>& lhs, const T rhs) {
+constexpr Matrix<rows, columns, T>& operator/=(Matrix<rows, columns, T>& lhs, const T rhs) {
 	for (size_t i = 0; i < columns; i++)
 	{
 		lhs[i] /= rhs;
@@ -669,31 +670,31 @@ Matrix<rows, columns, T>& operator/=(Matrix<rows, columns, T>& lhs, const T rhs)
 }
 
 template<typename T, size_t rows, size_t columns>
-Matrix<rows, columns, T> operator+(Matrix<rows, columns, T> lhs, const Matrix<rows, columns, T>& rhs) {
+constexpr Matrix<rows, columns, T> operator+(Matrix<rows, columns, T> lhs, const Matrix<rows, columns, T>& rhs) {
 	lhs += rhs;
 	return lhs;
 }
 
 template<typename T, size_t rows, size_t columns>
-Matrix<rows, columns, T> operator-(Matrix<rows, columns, T> lhs, const Matrix<rows, columns, T>& rhs) {
+constexpr Matrix<rows, columns, T> operator-(Matrix<rows, columns, T> lhs, const Matrix<rows, columns, T>& rhs) {
 	lhs -= rhs;
 	return lhs;
 }
 
 template<typename T, size_t rows, size_t columns>
-Matrix<rows, columns, T> operator*(Matrix<rows, columns, T> lhs, const T rhs) {
+constexpr Matrix<rows, columns, T> operator*(Matrix<rows, columns, T> lhs, const T rhs) {
 	lhs *= rhs;
 	return lhs;
 }
 
 template<typename T, size_t rows, size_t columns>
-Matrix<rows, columns, T> operator/(Matrix<rows, columns, T> lhs, const T rhs) {
+constexpr Matrix<rows, columns, T> operator/(Matrix<rows, columns, T> lhs, const T rhs) {
 	lhs /= rhs;
 	return lhs;
 }
 
 template<typename T, size_t rows, size_t columns>
-Matrix<rows, columns, T> operator-(Matrix<rows, columns, T> lhs) {
+constexpr Matrix<rows, columns, T> operator-(Matrix<rows, columns, T> lhs) {
 	for (int i = 0; i < columns; ++i) {
 		lhs[i] = -lhs[i];
 	}
@@ -701,7 +702,7 @@ Matrix<rows, columns, T> operator-(Matrix<rows, columns, T> lhs) {
 }
 
 template<typename T, size_t rows, size_t columns>
-Matrix<rows, columns, T> operator*(const Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
+constexpr Matrix<rows, columns, T> operator*(const Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
 	Matrix<rows, columns, T> result(0);
 	for (size_t row = 0; row < rows; row++)
 	{
@@ -717,7 +718,7 @@ Matrix<rows, columns, T> operator*(const Matrix<rows, columns, T>& lhs, const Ma
 }
 
 template<typename T, size_t rows, size_t columns>
-Matrix<rows, columns, T>& operator*=(Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
+constexpr Matrix<rows, columns, T>& operator*=(Matrix<rows, columns, T>& lhs, const Matrix<rows, columns, T>& rhs) {
 	lhs = lhs * rhs;
 	return lhs;
 }

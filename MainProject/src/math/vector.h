@@ -13,16 +13,16 @@ namespace math
 	struct TVector {
 		static_assert(size > 1, "Vector size should be greater than 1");
 
-		T& operator[](const size_t i)
+		constexpr T& operator[](const size_t i)
 		{
 			return static_cast<Vector<size, T>*>(this)->data[i];
 		}
-		const T& operator[](const size_t i) const
+		constexpr const T& operator[](const size_t i) const
 		{
 			return static_cast<const Vector<size, T>*>(this)->data[i];
 		}
 
-		T lengthSquared() const
+		constexpr T lengthSquared() const
 		{
 			T sum = 0;
 			for (size_t i = 0; i < size; i++)
@@ -32,18 +32,18 @@ namespace math
 			return sum;
 		}
 
-		T length() const
+		constexpr T length() const
 		{
 			return sqrt(lengthSquared());
 		}
 
-		Vector<size, T>& normalize() {
+		constexpr Vector<size, T>& normalize() {
 			T l = length();
 			for (int i = 0; i < size; ++i) (*this)[i] /= l;
 			return *static_cast<Vector<size, T>*>(this);
 		}
 
-		Vector<size, T> normalized() const {
+		constexpr Vector<size, T> normalized() const {
 			return Vector<size, T>(*static_cast<const Vector<size, T>*>(this)).normalize();
 		}
 	};
@@ -54,8 +54,8 @@ struct Vector : public math::TVector<size, T>
 {
 	T data[size];
 
-	Vector() : Vector(0) {}
-	explicit Vector(T value)
+	constexpr Vector() : Vector(0) {}
+	constexpr explicit Vector(T value)
 	{
 		for (size_t i = 0; i < size; i++)
 		{
@@ -75,9 +75,9 @@ struct Vector<2, T> : public math::TVector<2, T>
 		T data[2];
 	};
 
-	Vector() : Vector(0) {}
-	explicit Vector(T value) : x(value), y(value) {}
-	Vector(T _x, T _y) : x(_x), y(_y) {}
+	constexpr Vector() : Vector(0) {}
+	constexpr explicit Vector(T value) : x(value), y(value) {}
+	constexpr Vector(T _x, T _y) : x(_x), y(_y) {}
 };
 
 template<typename T>
@@ -92,10 +92,10 @@ struct Vector<3, T> : public math::TVector<3, T>
 		T data[3];
 	};
 
-	Vector() : Vector(0) {}
-	explicit Vector(T value) : x(value), y(value), z(value) {}
-	Vector(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
-	Vector(const Vector<2, T>& vec2, T _z) : x(vec2.x), y(vec2.y), z(_z) {}
+	constexpr Vector() : Vector(0) {}
+	constexpr explicit Vector(T value) : x(value), y(value), z(value) {}
+	constexpr Vector(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
+	constexpr Vector(const Vector<2, T>& vec2, T _z) : x(vec2.x), y(vec2.y), z(_z) {}
 };
 
 template<typename T>
@@ -109,15 +109,15 @@ struct Vector<4, T> : public math::TVector<4, T> {
 		T data[4];
 	};
 
-	Vector() : Vector(0) {}
-	explicit Vector(const T value) : x(value), y(value), z(value), w(value) {}
-	Vector(const T _x, const T _y, const T _z, const T _w) : x(_x), y(_y), z(_z), w(_w) {}
-	Vector(const Vector<3, T>& vec3, const T _w) : x(vec3.x), y(vec3.y), z(vec3.z), w(_w) {}
-	Vector(const Vector<2, T>& vec2, const T _z, const T _w) : x(vec2.x), y(vec2.y), z(_z), w(_w) {}
+	constexpr Vector() : Vector(0) {}
+	constexpr explicit Vector(const T value) : x(value), y(value), z(value), w(value) {}
+	constexpr Vector(const T _x, const T _y, const T _z, const T _w) : x(_x), y(_y), z(_z), w(_w) {}
+	constexpr Vector(const Vector<3, T>& vec3, const T _w) : x(vec3.x), y(vec3.y), z(vec3.z), w(_w) {}
+	constexpr Vector(const Vector<2, T>& vec2, const T _z, const T _w) : x(vec2.x), y(vec2.y), z(_z), w(_w) {}
 };
 
 template<size_t size, typename T>
-bool operator==(const Vector<size, T>& lhs, const Vector<size, T>& rhs) {
+constexpr bool operator==(const Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 	for (size_t i = 0; i < size; i++)
 	{
 		if (lhs[i] != rhs[i])return false;
@@ -126,7 +126,7 @@ bool operator==(const Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 }
 
 template<size_t size, typename T>
-bool operator!=(const Vector<size, T>& lhs, const Vector<size, T>& rhs) {
+constexpr bool operator!=(const Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 	for (size_t i = 0; i < size; i++)
 	{
 		if (lhs[i] != rhs[i])return true;
@@ -135,7 +135,7 @@ bool operator!=(const Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 }
 
 template<size_t size, typename T>
-Vector<size, T>& operator+=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
+constexpr Vector<size, T>& operator+=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 	for (size_t i = 0; i < size; i++)
 	{
 		lhs[i] += rhs[i];
@@ -144,7 +144,7 @@ Vector<size, T>& operator+=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 }
 
 template<size_t size, typename T>
-Vector<size, T>& operator-=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
+constexpr Vector<size, T>& operator-=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 	for (size_t i = 0; i < size; i++)
 	{
 		lhs[i] -= rhs[i];
@@ -153,7 +153,7 @@ Vector<size, T>& operator-=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 }
 
 template<size_t size, typename T>
-Vector<size, T>& operator*=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
+constexpr Vector<size, T>& operator*=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 	for (size_t i = 0; i < size; i++)
 	{
 		lhs[i] *= rhs[i];
@@ -162,7 +162,7 @@ Vector<size, T>& operator*=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 }
 
 template<size_t size, typename T>
-Vector<size, T>& operator*=(Vector<size, T>& lhs, const T rhs) {
+constexpr Vector<size, T>& operator*=(Vector<size, T>& lhs, const T rhs) {
 	for (size_t i = 0; i < size; i++)
 	{
 		lhs[i] *= rhs;
@@ -171,7 +171,7 @@ Vector<size, T>& operator*=(Vector<size, T>& lhs, const T rhs) {
 }
 
 template<size_t size, typename T>
-Vector<size, T>& operator/=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
+constexpr Vector<size, T>& operator/=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 	for (size_t i = 0; i < size; i++)
 	{
 		lhs[i] /= rhs[i];
@@ -180,7 +180,7 @@ Vector<size, T>& operator/=(Vector<size, T>& lhs, const Vector<size, T>& rhs) {
 }
 
 template<size_t size, typename T>
-Vector<size, T>& operator/=(Vector<size, T>& lhs, const T rhs) {
+constexpr Vector<size, T>& operator/=(Vector<size, T>& lhs, const T rhs) {
 	for (size_t i = 0; i < size; i++)
 	{
 		lhs[i] /= rhs;
@@ -189,42 +189,42 @@ Vector<size, T>& operator/=(Vector<size, T>& lhs, const T rhs) {
 }
 
 template<size_t size, typename T>
-Vector<size, T> operator+(Vector<size, T> lhs, const Vector<size, T>& rhs) {
+constexpr Vector<size, T> operator+(Vector<size, T> lhs, const Vector<size, T>& rhs) {
 	return lhs += rhs;
 }
 
 template<size_t size, typename T>
-Vector<size, T> operator-(Vector<size, T> lhs, const Vector<size, T>& rhs) {
+constexpr Vector<size, T> operator-(Vector<size, T> lhs, const Vector<size, T>& rhs) {
 	return lhs -= rhs;
 }
 
 template<size_t size, typename T>
-Vector<size, T> operator*(Vector<size, T> lhs, const Vector<size, T>& rhs) {
+constexpr Vector<size, T> operator*(Vector<size, T> lhs, const Vector<size, T>& rhs) {
 	return lhs *= rhs;
 }
 
 template<size_t size, typename T>
-Vector<size, T> operator*(Vector<size, T> lhs, const T rhs) {
+constexpr Vector<size, T> operator*(Vector<size, T> lhs, const T rhs) {
 	return lhs *= rhs;
 }
 
 template<size_t size, typename T>
-Vector<size, T> operator*(const T lhs, Vector<size, T> rhs) {
+constexpr Vector<size, T> operator*(const T lhs, Vector<size, T> rhs) {
 	return rhs *= lhs;
 }
 
 template<size_t size, typename T>
-Vector<size, T> operator/(Vector<size, T> lhs, const Vector<size, T>& rhs) {
+constexpr Vector<size, T> operator/(Vector<size, T> lhs, const Vector<size, T>& rhs) {
 	return lhs /= rhs;
 }
 
 template<size_t size, typename T>
-Vector<size, T> operator/(Vector<size, T> lhs, const T rhs) {
+constexpr Vector<size, T> operator/(Vector<size, T> lhs, const T rhs) {
 	return lhs /= rhs;
 }
 
 template<size_t size, typename T>
-Vector<size, T> operator-(Vector<size, T> rhs) {
+constexpr Vector<size, T> operator-(Vector<size, T> rhs) {
 	for (int i = 0; i < size; ++i) {
 		rhs[i] = -rhs[i];
 	}
