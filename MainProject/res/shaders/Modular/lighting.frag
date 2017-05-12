@@ -142,11 +142,11 @@ void calculatePointLight(PointLight pointLight, out vec3 diffuseColor, out vec3 
 		vec3 lightDirection = v_position - pointLight.position;
 		float distanceToLight = length(lightDirection);
 		
-		if(distanceToLight > pointLight.radius)return;
-		
 		calculateLight(pointLight.baseLight, (lightDirection / distanceToLight), diffuseColor, specularColor);
 		
 		float attenuation = 1.0 / calculateAttenuation(pointLight.attenuation, distanceToLight);
+		
+		if(distanceToLight > pointLight.radius) attenuation = 0;
 		
 		diffuseColor *= attenuation;
 		specularColor *= attenuation;
@@ -160,13 +160,13 @@ void calculateSpotLight(SpotLight spotLight, out vec3 diffuseColor, out vec3 spe
 		vec3 lightDirection = normalize(v_position - spotLight.pointLight.position);
 		float spotFactor = dot(lightDirection, spotLight.direction);
 		
-		if(spotFactor > spotLight.cutOff)
-		{
-			calculatePointLight(spotLight.pointLight, diffuseColor, specularColor);
-			
-			float coneAttenuation = 1.0 - ((1.0 - spotFactor) / (1.0 - spotLight.cutOff));
-			diffuseColor *= coneAttenuation;
-			specularColor *= coneAttenuation;
-		}
+		spotFactor = max(spotFactor, spotLight.cutOff);
+
+		calculatePointLight(spotLight.pointLight, diffuseColor, specularColor);
+		
+		float coneAttenuation = 1.0 - ((1.0 - spotFactor) / (1.0 - spotLight.cutOff));
+
+		diffuseColor *= coneAttenuation;
+		specularColor *= coneAttenuation;
 	}
 }
