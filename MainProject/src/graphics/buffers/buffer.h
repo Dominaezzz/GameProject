@@ -64,7 +64,7 @@ protected:
 	}
 	void setSubData(const void* data, const size_t offset, const size_t size)
 	{
-		if (offset < 0 || offset >= this->size || (offset + size) > this->size) throw std::invalid_argument("");
+		if ((offset + size) > this->size) throw std::invalid_argument("");
 		bind();
 		glBufferSubData(target, offset, size, data);
 	}
