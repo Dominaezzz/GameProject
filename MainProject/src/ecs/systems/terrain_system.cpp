@@ -1,12 +1,5 @@
 #include "terrain_system.h"
 
-void TerrainNode::setGameObject(GameObject * gameObject)
-{
-	Node::setGameObject(gameObject);
-	transform = gameObject->getComponent<Transform>();
-	terrain = gameObject->getComponent<Terrain>();
-}
-
 struct Vertex
 {
 	Vector3 position;
@@ -121,8 +114,8 @@ void TerrainSystem::render()
 
 	for (size_t i = 0; i < terrainNodes.size(); ++i)
 	{
-		auto transform = terrainNodes[i].transform;
-		auto terrain = terrainNodes[i].terrain;
+		auto transform = terrainNodes[i].get<Transform>();
+		auto terrain = terrainNodes[i].get<Terrain>();
 
 		const auto trans = transform->getTransform();
 		glUniformMatrix4fv(transormationMatrix, 1, false, &trans[0][0]);

@@ -5,16 +5,9 @@
 #include "../../graphics/mesh.h"
 #include "../../graphics/buffers/uniform_buffer.h"
 
-struct CameraNode final : Node
-{
-	Transform* transform;
-	Camera* camera;
-
-	void setGameObject(GameObject* gameObject) override;
-};
-
 class CameraSystem : public System
 {
+	using CameraNode = Node<Transform, Camera>;
 	struct Matrices
 	{
 		Matrix4 projection;

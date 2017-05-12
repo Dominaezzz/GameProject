@@ -1,12 +1,5 @@
 #include "camera_system.h"
 
-void CameraNode::setGameObject(GameObject * gameObject)
-{
-	Node::setGameObject(gameObject);
-	transform = gameObject->getComponent<Transform>();
-	camera = gameObject->getComponent<Camera>();
-}
-
 CameraSystem::CameraSystem(World* world) : System(world)
 {
 	const int indices[] =
@@ -55,9 +48,10 @@ void CameraSystem::render()
 	for (size_t i = 0; i < cameraNodes.size(); i++)
 	{
 		auto& node = cameraNodes[i];
-		matriceses[i].projection = node.camera->getProjection();
-		matriceses[i].view = Matrix4::createFromQuaternion(node.transform->Rotation.inverted()) * Matrix4::translate(-node.transform->Position);
-		matriceses[i].cameraPosition = node.transform->getWorldPosition();
+		matriceses[i].projection = node.get<Camera>()->getProjection();
+		auto transform = node.get<Transform>();
+		matriceses[i].view = Matrix4::createFromQuaternion(transform->Rotation.inverted()) * Matrix4::translate(-transform->Position);
+		matriceses[i].cameraPosition = transform->getWorldPosition();
 	}
 	cameraBuffer.setSubData(matriceses.data(), 0, sizeof(Matrices) * cameraNodes.size());
 
@@ -70,9 +64,9 @@ void CameraSystem::render()
 
 		auto& node = cameraNodes[i];
 
-		node.camera->skyBox->bind(0);
+		node.get<Camera>()->skyBox->bind(0);
 		skyBoxMesh.render(GL_TRIANGLES, 0, 36);
-		node.camera->skyBox->unBind(0);
+		node.get<Camera>()->skyBox->unBind(0);
 	}
 	skyBoxShader.end();
 	glDepthMask(true);

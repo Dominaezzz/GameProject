@@ -2,13 +2,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-void ParticleNode::setGameObject(GameObject * gameObject)
-{
-	Node::setGameObject(gameObject);
-	transform = gameObject->getComponent<Transform>();
-	emitter = gameObject->getComponent<ParticleEmitter>();
-}
-
 ParticleSystem::ParticleSystem(World* world) : System(world)
 {
 	const Vector2 Vertices[] = { Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1) };
@@ -119,7 +112,7 @@ void ParticleSystem::update(float dt)
 	{
 		ParticleNode& node = particleNodes[i];
 
-		auto emitter = node.emitter;
+		auto emitter = node.get<ParticleEmitter>();
 
 		std::function<int(float)> size;
 		if (emitter->emitFromEdge)
@@ -175,8 +168,8 @@ void ParticleSystem::render()
 
 	for (ParticleNode& node : particleNodes)
 	{
-		auto emitter = node.emitter;
-		auto transform = node.transform;
+		auto emitter = node.get<ParticleEmitter>();
+		auto transform = node.get<Transform>();
 		
 		if (emitter->isAdditive)
 		{
@@ -206,15 +199,19 @@ void ParticleSystem::render()
 		glUniform1i(numberOfRows, emitter->rows);
 
 #if PARTICLE_SYSTEM_IS_INSTANCED
-		if(node.particles.size() > instances.size()) instances.resize(node.particles.size());
+		if (node.particles.size() > instances.size())
+		{
+			instances.resize(node.particles.size());
+			perParticleBuffer->setData(nullptr, node.particles.size() * sizeof(ParticleInstance), BufferUsage::StreamDraw);
+		}
 		for (size_t index = 0; index < node.particles.size(); ++index)
 		{
 			const Particle& particle = node.particles[index];
-			instances[index].transform = Vector4(node.transform->Position + particle.position, 3);
+			instances[index].transform = Vector4(transform->Position + particle.position, 3);
 			instances[index].indexF = particle.textureIndex;
 			instances[index].blend = particle.blend;
 		}
-		perParticleBuffer->setData(instances.data(), node.particles.size() * sizeof(ParticleInstance), BufferUsage::StreamDraw);
+		perParticleBuffer->setSubData(instances.data(), 0, node.particles.size() * sizeof(ParticleInstance));
 
 		particleMesh.renderInstanced(GL_TRIANGLES, node.particles.size(), 0, -1, false);
 #else

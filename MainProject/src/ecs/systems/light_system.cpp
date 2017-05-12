@@ -1,12 +1,5 @@
 #include "light_system.h"
 
-void LightNode::setGameObject(GameObject * gameObject)
-{
-	Node::setGameObject(gameObject);
-	transform = gameObject->getComponent<Transform>();
-	light = gameObject->getComponent<Light>();
-}
-
 LightSystem::LightSystem(World * world) : System(world)
 {
 	lightsBuffer.bindBase(1);
@@ -57,8 +50,8 @@ void LightSystem::render()
 
 	for (size_t i = 0; i < lightNodes.size(); ++i)
 	{
-		auto transform = lightNodes[i].transform;
-		auto light = lightNodes[i].light;
+		auto transform = lightNodes[i].get<Transform>();
+		auto light = lightNodes[i].get<Light>();
 
 		switch (light->lightType)
 		{

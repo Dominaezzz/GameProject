@@ -29,13 +29,8 @@ struct Particle
 	}
 };
 
-struct ParticleNode final : Node
+struct ParticleNode final : Node<Transform, ParticleEmitter>
 {
-	Transform* transform;
-	ParticleEmitter* emitter;
-
-	void setGameObject(GameObject* gameObject) override;
-
 	std::vector<Particle> particles;
 	float elapsed = 0;
 };

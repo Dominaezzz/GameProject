@@ -5,16 +5,10 @@
 #include "../../graphics/buffers/uniform_buffer.h"
 #include "../node_list.h"
 
-struct LightNode final : Node
-{
-	Transform* transform;
-	Light* light;
-
-	void setGameObject(GameObject* gameObject) override;
-};
-
 class LightSystem : public System
 {
+	using LightNode = Node<Transform, Light>;
+
 	struct Lights
 	{
 		struct BaseLight
@@ -53,7 +47,7 @@ class LightSystem : public System
 	static_assert(sizeof(Lights) == 512, "Size is incorrect");
 
 	UniformBuffer lightsBuffer = UniformBuffer(sizeof(Lights), StreamDraw);
-	NodeList<LightNode> lightNodes = NodeList<LightNode>(int(ComponentType<Transform>()) | int(ComponentType<Light>()));
+	NodeList<LightNode> lightNodes = NodeList<LightNode>(ComponentType<Transform>() | ComponentType<Light>());
 
 	static void setBaseLight(Lights::BaseLight& baseLight, const Light& light);
 	static void setDirectionalLight(Lights::DirectionalLight& directionalLight, const Transform& transform, const Light& light);

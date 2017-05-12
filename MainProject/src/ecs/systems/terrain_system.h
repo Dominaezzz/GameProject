@@ -5,16 +5,10 @@
 #include "../../graphics/shaderprogram.h"
 #include "../../graphics/mesh.h"
 
-struct TerrainNode final : Node
-{
-	Transform* transform;
-	Terrain* terrain;
-
-	void setGameObject(GameObject* gameObject) override;
-};
-
 class TerrainSystem : public System
 {
+	using TerrainNode = Node<Transform, Terrain>;
+
 	NodeList<TerrainNode> terrainNodes = NodeList<TerrainNode>(ComponentType<Transform>() | ComponentType<Terrain>());
 	ShaderProgram terrainShader;
 	Mesh terrainMesh;
