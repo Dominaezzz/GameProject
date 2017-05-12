@@ -57,11 +57,33 @@ struct TQuaternion
 		result.xyz *= sin(angle / 2);
 		return result.normalize();
 	}
+	/**
+	 * Construct a new Quaternion from given Euler angles
+	 *
+	 * @param  pitch The pitch (attitude), rotation around X axis
+	 * @param  yaw The yaw (heading), rotation around Y axis
+	 * @param  roll The roll (bank), rotation around Z axis
+	 * @return Quaternion from given Euler angles
+	 */
 	constexpr static TQuaternion<T> fromEulerAngles(T pitch, T yaw, T roll)
 	{
-		return TQuaternion::fromAxisAngle(Vector<3, T>(1, 0, 0), pitch) *
-			TQuaternion::fromAxisAngle(Vector<3, T>(0, 1, 0), yaw) *
-			TQuaternion::fromAxisAngle(Vector<3, T>(0, 0, 1), roll);
+		yaw /= 2;
+		pitch /= 2;
+		roll /= 2;
+
+		T c1 = std::cos(yaw);
+		T c2 = std::cos(pitch);
+		T c3 = std::cos(roll);
+		T s1 = std::sin(yaw);
+		T s2 = std::sin(pitch);
+		T s3 = std::sin(roll);
+
+		return TQuaternion(
+			s1 * s2 * c3 + c1 * c2 * s3,
+			s1 * c2 * c3 + c1 * s2 * s3,
+			c1 * s2 * c3 - s1 * c2 * s3,
+			c1 * c2 * c3 - s1 * s2 * s3
+		);
 	}
 	constexpr static TQuaternion<T> slerp(const TQuaternion<T>& q1, const TQuaternion<T>& q2, T blend) {
 		// if either input is zero, return the other.

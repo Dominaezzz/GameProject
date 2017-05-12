@@ -105,15 +105,14 @@ void setUpLights(World& world)
 		lightSource->color = Color::White;
 		lightSource->intensity = 50.0f;
 		lightSource->attenuation = Attenuation(0, 1, 0);
-		lightSource->range = 500;// CalculateRange(lightSource.Attenuation, lightSource.Color, lightSource.Intensity);
+		lightSource->range = 100;// CalculateRange(lightSource.Attenuation, lightSource.Color, lightSource.Intensity);
 	}
 
 	GameObject* torchLight = world.newGameObject();
 	{
 		auto transform = torchLight->addComponent<Transform>();
 		transform->Position = 2.0f * Vector3(0, 1, 0);
-//		transform->Rotation = Quaternion::fromEulerAngles(0, MathHelper.PiOver4, -2 * MathHelper.PiOver4);
-		transform->Rotation = Quaternion::fromAxisAngle(Vector3(0, 1, 0), float(M_PI_4)) * Quaternion::fromAxisAngle(Vector3(0, 0, 1), -2 * float(M_PI_4));
+		transform->Rotation = Quaternion::fromEulerAngles(0, float(M_PI_4), -2 * float(M_PI_4));
 
 		auto lightSource = torchLight->addComponent<Light>();
 		lightSource->lightType = LightType::Spot;
