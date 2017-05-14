@@ -51,7 +51,7 @@ class ParticleSystem : public System
 	};
 	std::vector<ParticleInstance> instances;
 #else
-	GLuint transormation;
+	GLuint transformation;
 	GLuint index;
 	GLuint blend;
 #endif

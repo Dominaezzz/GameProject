@@ -1,6 +1,11 @@
 ﻿#version 420
 
 layout(location = 0) in vec2 position;
+in vec4 transform;
+// Must pass attribute as float instead of int
+// Graphics card doesn't like i(n)t. Some fucked up conversion reason of sorts. :D
+in float indexF;
+in float blend;
 
 out vec2 v_textureCoordinates;
 out vec2 v_textureCoordinates2;
@@ -11,10 +16,7 @@ layout (std140, binding = 0) uniform Matrices
 	mat4 projectionMatrix;
 	mat4 viewMatrix;
 };
-uniform vec4 transform;
 
-uniform int index;
-uniform float blend;
 uniform int numberOfRows;
 
 mat4 translate(float x, float y, float z);
@@ -23,6 +25,7 @@ mat4 scale(float x, float y, float z);
 void main()
 {
 	v_blend = blend;
+	int index = int(indexF);
 	
 	int row = index % numberOfRows;
 	int column = (index - row) / numberOfRows;

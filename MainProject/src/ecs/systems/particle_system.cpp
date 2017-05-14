@@ -10,11 +10,7 @@ ParticleSystem::ParticleSystem(World* world) : System(world)
 	particleMesh.setVertexAttribute<Vector2>(std::make_shared<VertexBuffer>(Vertices, sizeof(Vertices)), VertexAttrib::Position, sizeof(Vector2), 0);
 	particleMesh.setIndices(Indexes, sizeof(Indexes));
 
-#if PARTICLE_SYSTEM_IS_INSTANCED
-	particleShader.add(ShaderType::VertexShader, "res/Shaders/Particle/particleInstanced.vert");
-#else
 	particleShader.add(ShaderType::VertexShader, "res/Shaders/Particle/particle.vert");
-#endif
 	particleShader.add(ShaderType::VertexShader, "res/Shaders/Generic/math.glsl");
 	particleShader.add(ShaderType::FragmentShader, "res/Shaders/Particle/particle.frag");
 
@@ -32,9 +28,9 @@ ParticleSystem::ParticleSystem(World* world) : System(world)
 		perParticleBuffer, particleShader.getAttributeLocation("blend"), sizeof(ParticleInstance), offsetof(ParticleInstance, blend), false, true
 	);
 #else
-	transormation = particleShader.getUniformLocation("transform");
-	index = particleShader.getUniformLocation("index");
-	blend = particleShader.getUniformLocation("blend");
+	transformation = particleShader.getAttributeLocation("transform");
+	index = particleShader.getAttributeLocation("indexF");
+	blend = particleShader.getAttributeLocation("blend");
 #endif
 }
 
@@ -218,9 +214,11 @@ void ParticleSystem::render()
 		for(const auto& particle : node.particles)
 		{
 			auto temp = transform->Position + particle.position;
-			glUniform4f(transormation, temp.x, temp.y, temp.z, 3);
-			glUniform1i(index, particle.textureIndex);
-			glUniform1f(blend, particle.blend);
+
+			glVertexAttrib4f(transformation, temp.x, temp.y, temp.z, 3);
+			glVertexAttrib1f(index, particle.textureIndex);
+			glVertexAttrib1f(blend, particle.blend);
+
 			particleMesh.render(GL_TRIANGLES, 0, 6, false);
 		}
 #endif
