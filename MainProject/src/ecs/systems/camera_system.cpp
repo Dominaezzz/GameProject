@@ -43,7 +43,11 @@ void CameraSystem::update(float dt)
 
 void CameraSystem::render()
 {
-	std::vector<Matrices> matriceses(cameraNodes.size());
+	if (cameraNodes.size() > matriceses.size())
+	{
+		matriceses.resize(cameraNodes.size());
+		cameraBuffer.setData(nullptr, sizeof(Matrices) * cameraNodes.size(), BufferUsage::StreamDraw);
+	}
 
 	for (size_t i = 0; i < cameraNodes.size(); i++)
 	{

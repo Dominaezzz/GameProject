@@ -15,6 +15,7 @@ class CameraSystem : public System
 		Vector3 cameraPosition;
 		const float padding = 0;
 	};
+	std::vector<Matrices> matriceses = std::vector<Matrices>(1);
 
 	NodeList<CameraNode> cameraNodes = NodeList<CameraNode>(ComponentType<Transform>() | ComponentType<Camera>());
 	Mesh skyBoxMesh;
