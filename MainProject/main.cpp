@@ -81,6 +81,22 @@ void old_picture_render(Window& window)
 	}
 }
 
+void setUpGround(World& world)
+{
+	auto ground = world.newGameObject();
+	{
+		auto transform = ground->addComponent<Transform>();
+		transform->Position = Vector3(0) * float(Terrain::Size);
+
+		auto terrainComponent = ground->addComponent<Terrain>();
+		terrainComponent->background = Texture2D::fromFile("res/Terrain/grassy2.png", true);
+		terrainComponent->blendMap = Texture2D::fromFile("res/Terrain/blendMap.png", true);
+		terrainComponent->textureR = Texture2D::fromFile("res/Terrain/mud.png", true);
+		terrainComponent->textureG = Texture2D::fromFile("res/Terrain/grassFlowers.png", true);
+		terrainComponent->textureB = Texture2D::fromFile("res/Terrain/path.png", true);
+	}
+}
+
 void setUpLights(World& world)
 {
 	GameObject* sun = world.newGameObject();
@@ -239,12 +255,9 @@ int main() {
 
 	auto camera = worldCamera->addComponent<Camera>();
 	auto temp = TextureCube::fromFile(
-		"res/SkyBox/right.png",
-		"res/SkyBox/left.png",
-		"res/SkyBox/top.png",
-		"res/SkyBox/bottom.png",
-		"res/SkyBox/back.png",
-		"res/SkyBox/front.png"
+		"res/SkyBox/right.png", "res/SkyBox/left.png", 
+		"res/SkyBox/top.png", "res/SkyBox/bottom.png",
+		"res/SkyBox/back.png", "res/SkyBox/front.png"
 	);
 	camera->skyBox = temp.get();
 	camera->fieldOfView = 70 * (M_PI / 180.0F);
@@ -253,21 +266,9 @@ int main() {
 	camera->viewportWidth = window.getWidth();
 	camera->viewportHeight = window.getHeight();
 
+	setUpGround(world);
 	setUpLights(world);
 	setUpParticleEffects(world);
-
-	auto ground = world.newGameObject();
-	{
-		auto transform = ground->addComponent<Transform>();
-		transform->Position = Vector3(0) * float(Terrain::Size);
-
-		auto terrainComponent = ground->addComponent<Terrain>();
-		terrainComponent->background = Texture2D::fromFile("res/Terrain/grassy2.png", true);
-		terrainComponent->blendMap = Texture2D::fromFile("res/Terrain/blendMap.png", true);
-		terrainComponent->textureR = Texture2D::fromFile("res/Terrain/mud.png", true);
-		terrainComponent->textureG = Texture2D::fromFile("res/Terrain/grassFlowers.png", true);
-		terrainComponent->textureB = Texture2D::fromFile("res/Terrain/path.png", true);
-	}
 
 	clock_t start = clock();
 	clock_t timer = 0;
