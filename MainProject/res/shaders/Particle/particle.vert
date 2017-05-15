@@ -15,6 +15,7 @@ layout (std140, binding = 0) uniform Matrices
 {
 	mat4 projectionMatrix;
 	mat4 viewMatrix;
+	vec3 cameraPosition;
 };
 
 uniform int numberOfRows;
