@@ -44,7 +44,7 @@ float getValue(float value, float deviation, int power = 1)
 void init_particle(Particle& particle, ParticleEmitter& emitter, std::function<int(float)> size)
 {
 	Vector3 direction, deviation;
-	if (emitter.direction.lengthSquared() == 0)
+	if (emitter.direction == Vector3(0, 0, 0))
 	{
 		direction = Vector3(0, 1, 0);
 		deviation = Vector3(M_PI);
@@ -89,17 +89,12 @@ void init_particle(Particle& particle, ParticleEmitter& emitter, std::function<i
 		throw std::invalid_argument("");
 	}
 
-
+	particle.velocity = direction * getValue(emitter.speed, emitter.speedDeviation);
 	if (deviation != Vector3(0, 0, 0))
 	{
 		Quaternion rotation = Quaternion::fromEulerAngles(getValue(0, deviation.x), getValue(0, deviation.y), getValue(0, deviation.z));
-		particle.velocity = rotation * direction;
+		particle.velocity = rotation * particle.velocity;
 	}
-	else
-	{
-		particle.velocity = direction;
-	}
-	particle.velocity *= getValue(emitter.speed, emitter.speedDeviation);
 }
 
 void ParticleSystem::update(float dt)
