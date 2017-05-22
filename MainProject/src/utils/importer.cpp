@@ -63,7 +63,7 @@ std::shared_ptr<Mesh> loadMesh(glTF_t* gltf, const mesh_t& mesh, std::vector<std
 		const accessor_t& accessor = gltf->accessors[it->second];
 
 		int stride = gltf->bufferViews[accessor.bufferView].byteStride;
-		modelMesh->setVertexAttribute<Vector4>(vertexBuffers[accessor.bufferView], VertexAttrib::BoneWeight, stride, accessor.byteOffset);
+		modelMesh->setVertexAttribute<Vector4>(vertexBuffers[accessor.bufferView], VertexAttrib::Weights, stride, accessor.byteOffset);
 	}
 
 	it = primitive.attributes.find("JOINT");
@@ -72,7 +72,7 @@ std::shared_ptr<Mesh> loadMesh(glTF_t* gltf, const mesh_t& mesh, std::vector<std
 		const accessor_t& accessor = gltf->accessors[it->second];
 
 		int stride = gltf->bufferViews[accessor.bufferView].byteStride;
-		modelMesh->setVertexAttribute<Vector4>(vertexBuffers[accessor.bufferView], VertexAttrib::BoneWeight, stride, accessor.byteOffset);
+		modelMesh->setVertexAttribute<Vector4>(vertexBuffers[accessor.bufferView], VertexAttrib::Joints, stride, accessor.byteOffset);
 	}
 
 
@@ -153,7 +153,7 @@ std::shared_ptr<Texture2D> loadTexture(glTF_t* gltf, const texture_t& texture)
 	return modelTexture;
 }
 
-std::shared_ptr<Material> loadMaterial(glTF_t* gltf, const material_t& material, std::vector<std::shared_ptr<Texture2D>> textures)
+std::shared_ptr<Material> loadMaterial(const material_t& material, std::vector<std::shared_ptr<Texture2D>> textures)
 {
 	std::shared_ptr<Material> modelMaterial = std::make_shared<Material>();
 	auto it = material.extensions.find("KHR_materials_common");
@@ -232,7 +232,7 @@ GameObject * Importer::load(World & world, const std::string& path)
 		else vertexBuffers.push_back(nullptr);
 	}
 	for (const texture_t& texture : gltf->textures) textures.push_back(loadTexture(gltf, texture));
-	for (const material_t& material : gltf->materials) materials.push_back(loadMaterial(gltf, material, textures));
+	for (const material_t& material : gltf->materials) materials.push_back(loadMaterial(material, textures));
 	for (const mesh_t& mesh : gltf->meshes) meshes.push_back(loadMesh(gltf, mesh, vertexBuffers));
 
 	// Parse in nodes.

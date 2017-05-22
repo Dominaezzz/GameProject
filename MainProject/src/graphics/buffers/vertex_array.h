@@ -8,14 +8,17 @@
 #include "../gl_type.h"
 
 
-enum VertexAttrib{
+enum VertexAttrib
+{
 	Position = 0,
 	TexCoords = 1,
 	Normal = 2,
 	Tangent = 3,
 	BiTangent = 4,
 	ColorDiffuse = 5,
-	BoneWeight = 6,
+//	BoneWeight = 6,
+	Joints = 6,
+	Weights = 7,
 
 //	Ambient = 4,
 //	Diffuse = 5,
