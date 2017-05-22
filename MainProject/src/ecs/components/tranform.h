@@ -12,8 +12,8 @@ private:
 	Vector3 position;
 	Quaternion rotation;
 	Vector3 scale = Vector3(1);
-	std::weak_ptr<Transform> parent;
-	std::vector<std::weak_ptr<Transform>> children;
+	Transform* parent = nullptr;
+	std::vector<Transform*> children;
 
 	mutable std::unique_ptr<Vector3> worldPosition = nullptr;
 	mutable std::unique_ptr<Quaternion> worldRotation = nullptr;
@@ -21,7 +21,7 @@ private:
 	mutable std::unique_ptr<Matrix4> worldTransform = nullptr;
 	mutable std::unique_ptr<Matrix4> localTransform = nullptr;
 
-	void invalidate() const;
+	void invalidateHeirachy() const;
 public:
 	Transform();
 
@@ -29,6 +29,12 @@ public:
 	void setRotation(const Quaternion& rotation);
 	void setScale(const Vector3& scale);
 
+	void setParent(Transform* transform);
+	void addChild(Transform* transform);
+
+	Vector3& getPosition();
+	Quaternion& getRotation();
+	Vector3& getScale();
 	const Vector3& getPosition() const;
 	const Quaternion& getRotation() const;
 	const Vector3& getScale() const;

@@ -1,11 +1,19 @@
 #include "tranform.h"
 
-void Transform::invalidate() const
+void Transform::invalidateHeirachy() const
 {
-	worldTransform.reset();
-	worldPosition.reset();
-	worldRotation.reset();
-	worldScale.reset();
+	if (worldTransform != nullptr)
+	{
+		worldTransform.reset();
+		worldPosition.reset();
+		worldRotation.reset();
+		worldScale.reset();
+
+		for (const Transform* child : children)
+		{
+			child->invalidateHeirachy();
+		}
+	}
 }
 
 Transform::Transform()
@@ -15,22 +23,55 @@ Transform::Transform()
 void Transform::setPosition(const Vector3& position)
 {
 	localTransform.reset();
-	invalidate();
+	invalidateHeirachy();
 	this->position = position;
 }
 
 void Transform::setRotation(const Quaternion& rotation)
 {
 	localTransform.reset();
-	invalidate();
+	invalidateHeirachy();
 	this->rotation = rotation;
 }
 
 void Transform::setScale(const Vector3& scale)
 {
 	localTransform.reset();
-	invalidate();
+	invalidateHeirachy();
 	this->scale = scale;
+}
+
+void Transform::setParent(Transform * transform)
+{
+	transform->addChild(this);
+}
+
+void Transform::addChild(Transform * transform)
+{
+	children.push_back(transform);
+	transform->parent = this;
+	transform->invalidateHeirachy();
+}
+
+Vector3& Transform::getPosition()
+{
+	localTransform.reset();
+	invalidateHeirachy();
+	return position;
+}
+
+Quaternion& Transform::getRotation()
+{
+	localTransform.reset();
+	invalidateHeirachy();
+	return rotation;
+}
+
+Vector3& Transform::getScale()
+{
+	localTransform.reset();
+	invalidateHeirachy();
+	return scale;
 }
 
 const Vector3& Transform::getPosition() const
@@ -88,10 +129,9 @@ const Matrix4& Transform::getTransform() const
 {
 	if(worldTransform == nullptr)
 	{
-		auto p = parent.lock();
-		if(p != nullptr)
+		if(parent != nullptr)
 		{
-			worldTransform = std::make_unique<Matrix4>(p->getTransform() * getLocalTransform());
+			worldTransform = std::make_unique<Matrix4>(parent->getTransform() * getLocalTransform());
 		}
 		else
 		{
