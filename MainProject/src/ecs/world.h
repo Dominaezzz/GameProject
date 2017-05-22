@@ -34,12 +34,13 @@ public:
 template<typename SystemClass>
 SystemClass* World::addSystem()
 {
-//	System* system = new SystemClass(this);
-//	systems[typeid(SystemClass)] = std::unique_ptr<SystemClass>(system);
+	std::unique_ptr<SystemClass> system = std::make_unique<SystemClass>(this);
+	SystemClass* systemPtr = system.get();
+//	systems[typeid(SystemClass)] = system;
 
-//	systems[std::type_index(typeid(SystemClass))] = std::make_unique<SystemClass>(this);
-	systems.push_back(std::make_unique<SystemClass>(this));
-	return nullptr;
+//	systems[std::type_index(typeid(SystemClass))] = 
+	systems.push_back(std::move(system));
+	return systemPtr;
 }
 
 template<typename SystemClass>

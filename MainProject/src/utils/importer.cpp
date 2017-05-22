@@ -273,7 +273,7 @@ GameObject * Importer::load(World & world, const std::string& path)
 					for (int i = 0; i < accessor.count; ++i)
 					{
 						filter->bindPoses.push_back(*reinterpret_cast<const Matrix4*>(
-							&buffer.data[accessor.byteOffset + (i * bufferView.byteStride)]
+							&buffer.data[bufferView.byteOffset + (i * bufferView.byteStride) + accessor.byteOffset]
 						));
 					}
 
@@ -296,12 +296,89 @@ GameObject * Importer::load(World & world, const std::string& path)
 		}
 	}
 
-	const scene_t& mainScene = gltf->scenes[gltf->scene];
-	if (mainScene.nodes.size() == 1) return nodes[mainScene.nodes[0]];
+	GameObject* root = nullptr;
 
-	GameObject* root = world.newGameObject();
-	Transform* transform = root->addComponent<Transform>();
-	for (int rootNode : mainScene.nodes) transform->addChild(nodes[rootNode]->getComponent<Transform>());
+	const scene_t& mainScene = gltf->scenes[gltf->scene];
+	if (mainScene.nodes.size() == 1)
+	{
+		root = nodes[mainScene.nodes[0]];
+	}
+	else
+	{
+		root = world.newGameObject();
+		Transform* transform = root->addComponent<Transform>();
+		for (int rootNode : mainScene.nodes) transform->addChild(nodes[rootNode]->getComponent<Transform>());
+	}
+
+	for (const animation_t& animation : gltf->animations)
+	{
+		Animator* animator = root->addComponent<Animator>();
+		for (const animation_channel_t& channel : animation.channels)
+		{
+			const animation_channel_target_t& target = channel.target;
+			const animation_sampler_t& sampler = animation.samplers[channel.sampler];
+
+			// Time values
+			const accessor_t& in_accessor = gltf->accessors[sampler.input];
+			const bufferView_t& in_buffer_view = gltf->bufferViews[in_accessor.bufferView];
+			const buffer_t& in_buffer = gltf->buffers[in_buffer_view.buffer];
+
+			// Key Frame values
+			const accessor_t& out_accessor = gltf->accessors[sampler.output];
+			const bufferView_t& out_buffer_view = gltf->bufferViews[out_accessor.bufferView];
+			const buffer_t& out_buffer = gltf->buffers[out_buffer_view.buffer];
+
+			animator->duration = std::max(animator->duration, in_accessor.max[0]);
+			NodeAnimation nodeAnimation;
+			nodeAnimation.transform = nodes[target.node]->getComponent<Transform>();
+
+			int in_offset = in_buffer_view.byteOffset + in_accessor.byteOffset;
+			int in_stride = in_buffer_view.byteStride;
+			if (in_stride == 0) in_stride = sizeof(float);
+
+			int out_offset = out_buffer_view.byteOffset + out_accessor.byteOffset;
+
+			if (target.path == animation_channel_target_t::path_t::translation_t)
+			{
+				int out_stride = out_buffer_view.byteStride == 0 ? sizeof(Vector3) : out_buffer_view.byteStride;
+
+				for (int i = 0; i < in_accessor.count; ++i)
+				{
+					float time = *reinterpret_cast<const float*>(&in_buffer.data[in_offset + (i * in_stride)]);
+					const Vector3& value = *reinterpret_cast<const Vector3*>(&out_buffer.data[out_offset + (i * out_stride)]);
+
+					nodeAnimation.translations.insert(KeyFrame<Vector3>(time, value));
+				}
+			}
+			else if (target.path == animation_channel_target_t::path_t::scale_t)
+			{
+				int out_stride = out_buffer_view.byteStride == 0 ? sizeof(Vector3) : out_buffer_view.byteStride;
+
+				for (int i = 0; i < in_accessor.count; ++i)
+				{
+					float time = *reinterpret_cast<const float*>(&in_buffer.data[in_offset + (i * in_stride)]);
+					const Vector3& value = *reinterpret_cast<const Vector3*>(&out_buffer.data[out_offset + (i * out_stride)]);
+
+					nodeAnimation.scales.insert(KeyFrame<Vector3>(time, value));
+				}
+			}
+			else if (target.path == animation_channel_target_t::path_t::rotation_t)
+			{
+				int out_stride = out_buffer_view.byteStride == 0 ? sizeof(Quaternion) : out_buffer_view.byteStride;
+
+				for (int i = 0; i < in_accessor.count; ++i)
+				{
+					float time = *reinterpret_cast<const float*>(&in_buffer.data[in_offset + (i * in_stride)]);
+					const Quaternion& value = *reinterpret_cast<const Quaternion*>(&out_buffer.data[out_offset + (i * out_stride)]);
+
+					nodeAnimation.rotations.insert(KeyFrame<Quaternion>(time, value));
+				}
+			} else continue;
+
+			animator->nodeAnimations.push_back(std::move(nodeAnimation));
+		}
+		break;
+	}
 	
 	return root;
 }

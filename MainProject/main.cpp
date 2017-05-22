@@ -17,6 +17,7 @@
 #include "src/ecs/systems/particle_system.h"
 #include "src/utils/importer.h"
 #include "src/ecs/systems/mesh_rendering_system.h"
+#include "src/ecs/systems/animation_system.h"
 
 void old_picture_render(Window& window)
 {
@@ -328,7 +329,7 @@ void setUpModels(World& world)
 	GameObject* boxAnim = Importer::load(world, "res/Models/BoxAnimated.gltf");
 	{
 		auto t = boxAnim->getComponent<Transform>();
-		t->Position = Vector3(-30, 0, -10);
+		t->Position = Vector3(-30, 10, -10);
 		t->Scale = Vector3(5);
 	}
 }
@@ -354,6 +355,7 @@ int main() {
 	world.addSystem<LightSystem>();
 	world.addSystem<TerrainSystem>();
 	//world.addSystem<ParticleSystem>();
+	world.addSystem<AnimationSystem>();
 	world.addSystem<MeshRenderingSystem>();
 
 	auto worldCamera = world.newGameObject();

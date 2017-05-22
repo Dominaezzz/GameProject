@@ -100,7 +100,7 @@ struct TQuaternion
 			return q1;
 		}
 
-		T cosHalfAngle = (q1.w * q2.w) + Vector<3, T>::dot(q1.xyz, q2.xyz);
+		T cosHalfAngle = (q1.w * q2.w) + vec::dot(q1.xyz, q2.xyz);
 
 		if (cosHalfAngle >= 1 || cosHalfAngle <= -1)// angle = 0.0f, so just return one input.
 		{
@@ -123,10 +123,8 @@ struct TQuaternion
 			blendB = sin(halfAngle * blendB) * oneOverSinHalfAngle;
 		}
 
-		TQuaternion<T> result = (blendA * q1) + (blendB * q2);
-		if (result.lengthSquared() > 0.0f) {
-			return result.normalize();
-		}
+		TQuaternion<T> result((blendA * q1.xyzw) + (blendB * q2.xyzw));
+		if (result.lengthSquared() > 0.0f) return result.normalize();
 		return TQuaternion<T>(0, 0, 0, 1);
 	}
 };

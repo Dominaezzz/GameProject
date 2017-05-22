@@ -126,6 +126,7 @@
     <ClCompile Include="src\ecs\game_object.cpp" />
     <ClCompile Include="src\ecs\managers\tag_manager.cpp" />
     <ClCompile Include="src\ecs\system.cpp" />
+    <ClCompile Include="src\ecs\systems\animation_system.cpp" />
     <ClCompile Include="src\ecs\systems\camera_system.cpp" />
     <ClCompile Include="src\ecs\systems\light_system.cpp" />
     <ClCompile Include="src\ecs\systems\mesh_rendering_system.cpp" />
@@ -157,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ecs\component.h" />
+    <ClInclude Include="src\ecs\components\animator.h" />
     <ClInclude Include="src\ecs\components\camera.h" />
     <ClInclude Include="src\ecs\components\light.h" />
     <ClInclude Include="src\ecs\components\mesh_filter.h" />
@@ -170,6 +172,7 @@
     <ClInclude Include="src\ecs\node.h" />
     <ClInclude Include="src\ecs\node_list.h" />
     <ClInclude Include="src\ecs\system.h" />
+    <ClInclude Include="src\ecs\systems\animation_system.h" />
     <ClInclude Include="src\ecs\systems\camera_system.h" />
     <ClInclude Include="src\ecs\systems\light_system.h" />
     <ClInclude Include="src\ecs\systems\mesh_rendering_system.h" />

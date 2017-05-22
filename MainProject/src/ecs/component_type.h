@@ -9,6 +9,7 @@
 #include "components/particle_emitter.h"
 #include "components/mesh_filter.h"
 #include "components/mesh_renderer.h"
+#include "components/animator.h"
 
 template<typename ComponentClass>
 struct ComponentType
@@ -80,5 +81,14 @@ struct ComponentType<MeshRenderer>
 	constexpr operator int() const
 	{
 		return 1 << 6;
+	}
+};
+
+template<>
+struct ComponentType<Animator>
+{
+	constexpr operator int() const
+	{
+		return 1 << 7;
 	}
 };
