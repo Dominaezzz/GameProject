@@ -11,13 +11,13 @@ private:
 
 public:
 
-	GammaRamp(GLFWgammaramp gammaramp);
+	GammaRamp(const GLFWgammaramp& gammaramp);
 	GammaRamp();
 
 	/*! \brief Returns an array of values describing the response of the red channel.
 	 * \return An array of values describing the response of the red channel.
 	 */
-	unsigned short* getRed();
+	unsigned short* getRed() const;
 	/*! \brief Sets the array of values describing the response of the red channel.
 	 * \param[in] red An array of values describing the response of the red channel.
 	 */
@@ -26,7 +26,7 @@ public:
 	/*! \brief Returns an array of values describing the response of the green channel.
 	 * \return An array of values describing the response of the green channel.
 	 */
-	unsigned short* getGreen();
+	unsigned short* getGreen() const;
 	/*! \brief Sets the array of values describing the response of the green channel.
 	 * \param[in] green An array of values describing the response of the green channel.
 	 */
@@ -35,7 +35,7 @@ public:
 	/*! \brief Returns an array of values describing the response of the blue channel.
 	 * \return An array of values describing the response of the blue channel.
 	 */
-	unsigned short* getBlue();
+	unsigned short* getBlue() const;
 	/*! \brief Sets the array of values describing the response of the blue channel.
 	 * \param[in] blue An array of values describing the response of the blue channel.
 	 */
@@ -44,7 +44,7 @@ public:
 	/*! \brief Returns the size of the ramp
 	 * \return The size of the ramp
 	 */
-	unsigned int getSize();
+	unsigned int getSize() const;
 	/*! \brief Sets the size of the ramp
 	 * \param[in] size The size of the ramp
 	 */

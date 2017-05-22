@@ -1,7 +1,8 @@
 #include "window.h"
 #include "monitor.h"
 
-void joystickCallback(int joystick, int event){
+void joystickCallback(int joystick, int event)
+{
 	switch (event){
 		case GLFW_CONNECTED:
 			break;
@@ -11,7 +12,8 @@ void joystickCallback(int joystick, int event){
 			break;
 	}
 }
-void monitorCallback(GLFWmonitor* monitor, int event){
+void monitorCallback(GLFWmonitor* monitor, int event)
+{
 	switch (event){
 		case GLFW_CONNECTED:
 			break;
@@ -21,11 +23,13 @@ void monitorCallback(GLFWmonitor* monitor, int event){
 			break;
 	}
 }
-void errorCallback(int error_code, const char* description){
+void errorCallback(int error_code, const char* description)
+{
 	std::cerr << "Error Code " << error_code << " : " << description << std::endl;
 }
 
-void cursorPosCallback(GLFWwindow* window, double x, double y){
+void cursorPosCallback(GLFWwindow* window, double x, double y)
+{
 	Mouse::cursor_pos_callback(window, x, y);
 
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
@@ -33,7 +37,8 @@ void cursorPosCallback(GLFWwindow* window, double x, double y){
 		callback(win, x, y);
 	}
 }
-void dropCallback(GLFWwindow* window, int count, const char ** names){
+void dropCallback(GLFWwindow* window, int count, const char ** names)
+{
 	std::vector<std::string> temp_names;
 	for (int i = 0; i < count; ++i) {
 		temp_names.push_back(std::string(names[i]));
@@ -44,94 +49,117 @@ void dropCallback(GLFWwindow* window, int count, const char ** names){
 		callback(win, temp_names);
 	}
 }
-void scrollCallback(GLFWwindow* window, double xOffset, double yOffset){
+void scrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+{
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
 	for (auto callback : win->scrollCallbacks){
 		callback(win, xOffset, yOffset);
 	}
 }
-void frameBufferSizeCallback(GLFWwindow* window, int width, int height){
+void frameBufferSizeCallback(GLFWwindow* window, int width, int height)
+{
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
 	for (auto callback : win->frameBufferSizeCallbacks){
 		callback(win, width, height);
 	}
 }
-void charModsCallback(GLFWwindow* window, unsigned int codepoint, int mods){
+void charModsCallback(GLFWwindow* window, unsigned int codepoint, int mods)
+{
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
 	for (auto callback : win->charModsCallbacks){
 		callback(win, codepoint, mods);
 	}
 }
-void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
 	Mouse::mouse_button_callback(window, button, action, mods);
 
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	for (auto callback : win->mouseButtonCallbacks){
+	for (auto callback : win->mouseButtonCallbacks)
+	{
 		callback(win, (MouseButton)button, (Action)action, (Mod)mods);
 	}
 }
-void windowPosCallback(GLFWwindow* window, int x, int y){
+void windowPosCallback(GLFWwindow* window, int x, int y)
+{
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
 	win->x = x;
 	win->y = y;
-	for (auto callback : win->windowPosCallbacks){
+	for (auto callback : win->windowPosCallbacks)
+	{
 		callback(win, x, y);
 	}
 }
-void windowCloseCallback(GLFWwindow* window){
+void windowCloseCallback(GLFWwindow* window)
+{
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	for (auto callback : win->windowCloseCallbacks){
+	for (auto callback : win->windowCloseCallbacks)
+	{
 		callback(win);
 	}
 }
-void windowRefreshCallback(GLFWwindow* window){
+void windowRefreshCallback(GLFWwindow* window)
+{
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
 	for (auto callback : win->windowRefreshCallbacks){
 		callback(win);
 	}
 }
-void windowFocusCallback(GLFWwindow* window, int focused){
+void windowFocusCallback(GLFWwindow* window, int focused)
+{
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	for (auto callback : win->windowFocusCallbacks){
+	for (auto callback : win->windowFocusCallbacks)
+	{
 		callback(win, focused == GLFW_TRUE);
 	}
 }
-void windowIconifyCallback(GLFWwindow* window, int iconified){
+void windowIconifyCallback(GLFWwindow* window, int iconified)
+{
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	for (auto callback : win->windowIconifyCallbacks){
+	for (auto callback : win->windowIconifyCallbacks)
+	{
 		callback(win, iconified == GLFW_TRUE);
 	}
 }
 
-void cursorEnterCallback(GLFWwindow* window, int entered) {
+void cursorEnterCallback(GLFWwindow* window, int entered)
+{
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	for (auto callback : win->cursorEnterCallbacks){
+	for (auto callback : win->cursorEnterCallbacks)
+	{
 		callback(win, entered == GLFW_TRUE);
 	}
 }
-void charCallback(GLFWwindow* window, unsigned int character) {
+void charCallback(GLFWwindow* window, unsigned int character)
+{
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	for (auto callback : win->charCallbacks){
+	for (auto callback : win->charCallbacks)
+	{
 		callback(win, character);
 	}
 }
-void windowSizeCallback(GLFWwindow* window, int width, int height) {
+void windowSizeCallback(GLFWwindow* window, int width, int height)
+{
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	for (auto callback : win->windowSizeCallbacks){
+	for (auto callback : win->windowSizeCallbacks)
+	{
 		callback(win, width, height);
 	}
 }
-void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
 	Keyboard::key_callback(window, key, scancode, action, mods);
 
 	Window* win = (Window*)glfwGetWindowUserPointer(window);
-	for (auto callback : win->keyCallbacks){
+	for (auto callback : win->keyCallbacks)
+	{
 		callback(win, Key(key), Action(action), Mod(mods));
 	}
 }
 
 
-Window::Window(const std::string title, int width, int height) {
+Window::Window(const std::string title, int width, int height)
+{
 	this->title = title;
 	this->width = width;
 	this->height = height;
@@ -191,76 +219,104 @@ Window::Window(const std::string title, int width, int height) {
 	glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
 }
 
-Window::~Window() {
+Window::~Window()
+{
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
 
-int Window::getWidth() const { return width; }
+int Window::getWidth() const
+{
+	return width;
+}
 
-int Window::getHeight() const { return height; }
+int Window::getHeight() const
+{
+	return height;
+}
 
-int Window::getFrameBufferWidth() const { return frameBufferWidth; }
+int Window::getFrameBufferWidth() const
+{
+	return frameBufferWidth;
+}
 
-int Window::getFrameBufferHeight() const { return frameBufferHeight; }
+int Window::getFrameBufferHeight() const
+{
+	return frameBufferHeight;
+}
 
-bool Window::shouldClose() const {
+bool Window::shouldClose() const
+{
 	return glfwWindowShouldClose(window) == GLFW_TRUE;
 }
 
-void Window::swapBuffers() const {
+void Window::swapBuffers() const
+{
 	glfwSwapBuffers(window);
 }
 
-void Window::pollEvents() const {
+void Window::pollEvents() const
+{
 	glfwPollEvents();
 }
 
-void Window::setSwapInterval(int interval) const {
+void Window::setSwapInterval(int interval) const
+{
 	glfwSwapInterval(interval);
 }
 
-Window* Window::getCurrentWindow() {
+Window* Window::getCurrentWindow()
+{
 	return static_cast<Window*>(glfwGetWindowUserPointer(glfwGetCurrentContext()));
 }
 
-std::string Window::getClipboardString() const {
+std::string Window::getClipboardString() const
+{
 	return glfwGetClipboardString(window);
 }
 
-void Window::setClipboardString(const std::string string) const {
+void Window::setClipboardString(const std::string string) const
+{
 	glfwSetClipboardString(window, string.c_str());
 }
 
-void Window::iconify() const {
+void Window::iconify() const
+{
 	glfwIconifyWindow(window);
 }
 
-void Window::restore() const {
+void Window::restore() const
+{
 	glfwRestoreWindow(window);
 }
 
-bool Window::isFocused() const {
+bool Window::isFocused() const
+{
 	return glfwGetWindowAttrib(window, GLFW_FOCUSED) == GLFW_TRUE;
 }
 
-bool Window::isIconified() const {
+bool Window::isIconified() const
+{
 	return glfwGetWindowAttrib(window, GLFW_ICONIFIED) == GLFW_TRUE;
 }
 
-bool Window::isResizable() const {
+bool Window::isResizable() const
+{
 	return glfwGetWindowAttrib(window, GLFW_RESIZABLE) == GLFW_TRUE;
 }
 
-bool Window::isVisible() const {
+bool Window::isVisible() const
+{
 	return glfwGetWindowAttrib(window, GLFW_VISIBLE) == GLFW_TRUE;
 }
 
-bool Window::isFullScreen() const {
+bool Window::isFullScreen() const
+{
 	return glfwGetWindowMonitor(window) != nullptr;
 }
 
-void Window::setVisible(bool visible) const {
+void Window::setVisible(bool visible) const
+{
 	if(visible){
 		glfwShowWindow(window);
 	}else{
@@ -268,19 +324,23 @@ void Window::setVisible(bool visible) const {
 	}
 }
 
-void Window::setTitle(const std::string title) const {
+void Window::setTitle(const std::string title) const
+{
 	glfwSetWindowTitle(window, title.c_str());
 //	this->title = std::string(title);
 }
 
-void Window::setSize(int width, int height) const {
+void Window::setSize(int width, int height) const
+{
 	glfwSetWindowSize(window, width, height);
 }
 
-void Window::setWindowSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight) const {
+void Window::setWindowSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight) const
+{
 	glfwSetWindowSizeLimits(window, minWidth, minHeight, maxWidth, maxHeight);
 }
 
-void Window::setCursorPosition(double x, double y) const {
+void Window::setCursorPosition(double x, double y) const
+{
 	glfwSetCursorPos(window, x, y);
 }

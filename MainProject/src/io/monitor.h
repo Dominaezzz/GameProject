@@ -28,9 +28,7 @@ struct MonitorPos {
  */
 class Monitor
 {
-private:
 	GLFWmonitor* monitor;
-
 public:
 	Monitor(GLFWmonitor* monitor);
 
@@ -88,5 +86,4 @@ public:
 	 * \returns the C GLFW pointer for this Monitor.
 	 */
 	operator GLFWmonitor*() const;
-
 };

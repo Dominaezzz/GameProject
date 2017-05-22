@@ -23,54 +23,67 @@ VideoMode::VideoMode(int width, int height, int redbits, int greenbits, int blue
 
 VideoMode::VideoMode(const GLFWvidmode& vidmode) : vidmode(vidmode) {}
 
-int VideoMode::getWidth() const {
+int VideoMode::getWidth() const
+{
 	return vidmode.width;
 }
 
-void VideoMode::setWidth(int width) {
+void VideoMode::setWidth(int width)
+{
 	vidmode.width = width;
 }
 
-int VideoMode::getHeight() const {
+int VideoMode::getHeight() const
+{
 	return vidmode.height;
 }
 
-void VideoMode::setHeight(int height) {
+void VideoMode::setHeight(int height)
+{
 	vidmode.height = height;
 }
 
-int VideoMode::getRedBits() const {
+int VideoMode::getRedBits() const
+{
 	return vidmode.redBits;
 }
 
-void VideoMode::setRedBits(int redbits) {
+void VideoMode::setRedBits(int redbits)
+{
 	vidmode.redBits = redbits;
 }
 
-int VideoMode::getGreenBits() const {
+int VideoMode::getGreenBits() const
+{
 	return vidmode.greenBits;
 }
 
-void VideoMode::setGreenBits(int greenbits) {
+void VideoMode::setGreenBits(int greenbits)
+{
 	vidmode.greenBits = greenbits;
 }
 
-int VideoMode::getBlueBits() const {
+int VideoMode::getBlueBits() const
+{
 	return vidmode.blueBits;
 }
 
-void VideoMode::setBlueBits(int bluebits) {
+void VideoMode::setBlueBits(int bluebits)
+{
 	vidmode.blueBits = bluebits;
 }
 
-int VideoMode::getRefreshRate() const {
+int VideoMode::getRefreshRate() const
+{
 	return vidmode.refreshRate;
 }
 
-void VideoMode::setRefreshRate(int refreshrate) {
+void VideoMode::setRefreshRate(int refreshrate)
+{
 	vidmode.refreshRate = refreshrate;
 }
 
-//VideoMode::operator GLFWvidmode*() const {
-//	return &vidmode;
-//}
+VideoMode::operator struct GLFWvidmode const*() const
+{
+	return &vidmode;
+}

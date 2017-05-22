@@ -76,5 +76,5 @@ public:
 	/*!\brief Gets the C GLFW pointer for the monitor
 	 * \returns the monitor's C GLFW pointer
 	 */
-//	operator GLFWvidmode*() const;
+	operator GLFWvidmode const*() const;
 };

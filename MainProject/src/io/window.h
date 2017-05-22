@@ -29,8 +29,8 @@ typedef std::function<void (Window*, double, double)> FrameBufferSizeCallback;
 typedef std::function<void (Window*, const std::vector<std::string>)> DropCallback;
 typedef std::function<void (Window*, MouseButton, Action, Mod)> MouseButtonCallback;
 
-class Window {
-private:
+class Window
+{
 	GLFWwindow* window;
 	std::string title;
 	int x, y, width, height;

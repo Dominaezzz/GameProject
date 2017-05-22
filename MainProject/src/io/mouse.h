@@ -20,7 +20,6 @@ enum class MouseButton : int
 
 class Mouse
 {
-private:
 	Mouse() {}
 	~Mouse() {}
 	static float x, y;
