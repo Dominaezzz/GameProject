@@ -15,6 +15,8 @@
 #include "src/ecs/systems/light_system.h"
 #include "src/ecs/systems/terrain_system.h"
 #include "src/ecs/systems/particle_system.h"
+#include "src/utils/importer.h"
+#include "src/ecs/systems/mesh_rendering_system.h"
 
 void old_picture_render(Window& window)
 {
@@ -113,15 +115,27 @@ void setUpLights(World& world)
 	GameObject* lamp = world.newGameObject();
 	{
 		auto transform = lamp->addComponent<Transform>();
-		transform->Position = 5.0f * Vector3(0, 1, 0);
-		transform->Position += -(Vector3(1, 0, 1)) * 300.0f;
+		transform->Position = Vector3(-300, 5, -300);
 
 		auto lightSource = lamp->addComponent<Light>();
 		lightSource->lightType = LightType::Point;
 		lightSource->color = Color::White;
 		lightSource->intensity = 50.0f;
 		lightSource->attenuation = Attenuation(0, 1, 0);
-		lightSource->range = 100;// CalculateRange(lightSource.Attenuation, lightSource.Color, lightSource.Intensity);
+		lightSource->range = 100;
+	}
+
+	GameObject* modelLight = world.newGameObject();
+	{
+		auto transform = modelLight->addComponent<Transform>();
+		transform->Position = Vector3(-100, 10, -95);
+
+		auto lightSource = modelLight->addComponent<Light>();
+		lightSource->lightType = LightType::Point;
+		lightSource->color = Color::White;
+		lightSource->intensity = 40.0f;
+		lightSource->attenuation = Attenuation(0, 1, 0);
+		lightSource->range = 200;
 	}
 
 	GameObject* torchLight = world.newGameObject();
@@ -226,6 +240,92 @@ void setUpParticleEffects(World& world)
 //	}
 }
 
+GameObject* buildBox(World& world)
+{
+	GameObject* box = world.newGameObject();
+
+	Transform* transform = box->addComponent<Transform>();
+	{
+		transform->Position += Vector3(-40, 15, -40);
+		transform->Scale = Vector3(10);
+	}
+
+	MeshFilter* filter = box->addComponent<MeshFilter>();
+	{
+		const int indices[] =
+		{
+			0, 1, 2,  2, 3, 0,
+			4, 1, 0,  0, 5, 4,
+			2, 6, 7,  7, 3, 2,
+			4, 5, 7,  7, 6, 4,
+			0, 3, 7,  7, 5, 0,
+			1, 4, 2,  2, 4, 6
+		};
+
+		const float Size = 1;
+		const Vector3 vertices[] = {
+			Vector3(-Size,  Size, -Size), Vector3(-Size, -Size, -Size),
+			Vector3(Size, -Size, -Size), Vector3(Size,  Size, -Size),
+
+			Vector3(-Size, -Size,  Size), Vector3(-Size,  Size,  Size),
+			Vector3(Size, -Size,  Size), Vector3(Size,  Size,  Size)
+		};
+
+		auto buffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
+		filter->mesh = std::make_shared<Mesh>();
+
+		filter->mesh->setVertexAttribute<Vector3>(buffer, VertexAttrib::Position, sizeof(Vector3), 0);
+		filter->mesh->setIndices(indices, sizeof(indices));
+	}
+
+	MeshRenderer* renderer = box->addComponent<MeshRenderer>();
+	{
+		renderer->setColor(MaterialProperty::ColorAmbient, Color::Green);
+		renderer->setColor(MaterialProperty::ColorDiffuse, Color::Red);
+//		renderer->setTexture(MaterialProperty::TextureDiffuse, Texture2D::fromFile("res/images/Cover.jpg"));
+	}
+
+	return box;
+}
+
+void setUpModels(World& world)
+{
+	GameObject* box = Importer::load(world, "res/Models/Box.gltf");
+	{
+		auto t = box->getComponent<Transform>();
+		t->Position = Vector3(-50, 10, -10);
+		t->Scale = Vector3(5);
+	}
+
+	GameObject* boxTextured = Importer::load(world, "res/Models/BoxTextured.gltf");
+	{
+		auto t = boxTextured->getComponent<Transform>();
+		t->Position = Vector3(-50, 10, -30);
+		t->Scale = Vector3(5);
+	}
+
+	GameObject* duck = Importer::load(world, "res/Models/Duck.gltf");
+	{
+		auto t = duck->getComponent<Transform>();
+		t->Position = Vector3(-50, 10, -50);
+		t->Scale = Vector3(0.05f);
+	}
+
+	GameObject* face = Importer::load(world, "res/Models/SmilingFace.gltf");
+	{
+		auto t = face->getComponent<Transform>();
+		t->Position = Vector3(-50, 10, -70);
+		t->Scale = Vector3(5);
+	}
+
+//	GameObject* engine = Importer::load(world, "res/Models/2CylinderEngine.gltf");
+//	{
+//		auto t = engine->getComponent<Transform>();
+//		t->Position = Vector3(-50, 10, -90);
+//		t->Scale = Vector3(0.05f);
+//	}
+}
+
 int main() {
 
 	Window window("Main Window", 1080, 720);
@@ -246,7 +346,8 @@ int main() {
 	world.addSystem<CameraSystem>();
 	world.addSystem<LightSystem>();
 	world.addSystem<TerrainSystem>();
-	world.addSystem<ParticleSystem>();
+	//world.addSystem<ParticleSystem>();
+	world.addSystem<MeshRenderingSystem>();
 
 	auto worldCamera = world.newGameObject();
 	auto camTransform = worldCamera->addComponent<Transform>();
@@ -269,6 +370,7 @@ int main() {
 	setUpGround(world);
 	setUpLights(world);
 	setUpParticleEffects(world);
+	setUpModels(world);
 
 	clock_t start = clock();
 	clock_t timer = 0;

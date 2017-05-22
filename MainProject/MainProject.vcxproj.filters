@@ -102,6 +102,21 @@
     <ClCompile Include="src\ecs\systems\particle_system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ecs\systems\mesh_rendering_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\importer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\yocto_img.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\yocto_gltf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\textures\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\vector.h">
@@ -159,9 +174,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ecs\game_object.h">
@@ -243,6 +255,36 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\gl_type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\mesh_filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\mesh_renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\systems\mesh_rendering_system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\importer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\ext\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\yocto_img.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\yocto_gltf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\ext\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\ext\stb_image_write.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\ext\stb_image_resize.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -327,5 +369,10 @@
     <None Include="res\shaders\Generic\math.glsl" />
     <None Include="res\shaders\Particle\particle.frag" />
     <None Include="res\shaders\Particle\particle.vert" />
+    <None Include="res\Models\Box.gltf" />
+    <None Include="res\Models\BoxTextured.gltf" />
+    <None Include="res\Models\Duck.gltf" />
+    <None Include="res\Models\SmilingFace.gltf" />
+    <None Include="res\Models\2CylinderEngine.gltf" />
   </ItemGroup>
 </Project>
