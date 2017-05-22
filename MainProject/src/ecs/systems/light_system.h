@@ -1,5 +1,5 @@
 #pragma once
-#include "../components/tranform.h"
+#include "../components/transform.h"
 #include "../components/light.h"
 #include "../node.h"
 #include "../../graphics/buffers/uniform_buffer.h"

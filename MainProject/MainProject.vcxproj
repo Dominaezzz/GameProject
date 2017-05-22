@@ -122,7 +122,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\ecs\components\camera.cpp" />
-    <ClCompile Include="src\ecs\components\tranform.cpp" />
+    <ClCompile Include="src\ecs\components\transform.cpp" />
     <ClCompile Include="src\ecs\game_object.cpp" />
     <ClCompile Include="src\ecs\managers\tag_manager.cpp" />
     <ClCompile Include="src\ecs\system.cpp" />
@@ -163,7 +163,7 @@
     <ClInclude Include="src\ecs\components\mesh_renderer.h" />
     <ClInclude Include="src\ecs\components\particle_emitter.h" />
     <ClInclude Include="src\ecs\components\terrain.h" />
-    <ClInclude Include="src\ecs\components\tranform.h" />
+    <ClInclude Include="src\ecs\components\transform.h" />
     <ClInclude Include="src\ecs\component_type.h" />
     <ClInclude Include="src\ecs\game_object.h" />
     <ClInclude Include="src\ecs\managers\tag_manager.h" />

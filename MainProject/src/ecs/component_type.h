@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include "component.h"
-#include "components/tranform.h"
+#include "components/transform.h"
 #include "components/camera.h"
 #include "components/light.h"
 #include "components/terrain.h"

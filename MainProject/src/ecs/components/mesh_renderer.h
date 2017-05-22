@@ -1,7 +1,7 @@
 #pragma once
 #include "../component.h"
 #include <vector>
-#include "tranform.h"
+#include "transform.h"
 
 enum class MaterialProperty : size_t
 {

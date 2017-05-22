@@ -1,4 +1,4 @@
-#include "tranform.h"
+#include "transform.h"
 
 void Transform::invalidateHeirachy() const
 {
