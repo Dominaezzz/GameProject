@@ -22,13 +22,13 @@ void Mesh::unBind() const
 
 void Mesh::render(GLenum mode, GLuint offset, int count, bool autoBind) const
 {
-	if (count == 0 || vertexArray.getBufferCount() == 0)return;
+	if (count == 0 || vertexArray.getAttributeCount() == 0)return;
 
 	if (autoBind)bind();
 	{
 		if (indexBuffer.getCount() > 0)
 		{
-			glDrawElements(mode, count < 0 ? indexBuffer.getCount() : count, GL_UNSIGNED_INT, (void*)(offset * sizeof(int)));
+			glDrawElements(mode, count < 0 ? indexBuffer.getCount() : count, GL_UNSIGNED_INT, reinterpret_cast<void*>(offset * sizeof(int)));
 		}
 		else
 		{
