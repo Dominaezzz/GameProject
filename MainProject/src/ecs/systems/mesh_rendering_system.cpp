@@ -74,7 +74,7 @@ void MeshRenderingSystem::render()
 {
 //	std::sort(nodes.begin(), nodes.end(), [](const MeshRenderingNode& left, const MeshRenderingNode& right) -> bool
 //	{
-//		
+//		return left.get<MeshRenderer>()->getProperties() < right.get<MeshRenderer>()->getProperties();
 //	});
 
 	glEnable(GL_BLEND);
@@ -85,11 +85,7 @@ void MeshRenderingSystem::render()
 	{
 		auto renderer = node.get<MeshRenderer>();
 
-		MaterialProperty properties = static_cast<MaterialProperty>(0);
-		for (const auto& pair : renderer->textures) properties |= pair.first;
-		for (const auto& pair : renderer->colors) properties |= pair.first;
-		for (const auto& pair : renderer->floats) properties |= pair.first;
-		for (const auto& pair : renderer->bools) properties |= pair.first;
+		MaterialProperty properties = renderer->getProperties();
 
 		auto shader = getShader(properties);
 		shader->begin();

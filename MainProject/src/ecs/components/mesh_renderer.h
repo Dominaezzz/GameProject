@@ -42,16 +42,24 @@ inline constexpr MaterialProperty operator&=(MaterialProperty& left, MaterialPro
 	return left;
 }
 
-struct MeshRenderer : Component
+class Material final
 {
-	std::vector<Transform*> bones = {};
-	bool castShadows = false;
-
 	std::map<MaterialProperty, std::shared_ptr<Texture2D>> textures;
 	std::map<MaterialProperty, Color> colors;
 	std::map<MaterialProperty, float> floats;
 	std::map<MaterialProperty, bool> bools;
-	
+
+public:
+	MaterialProperty getProperties() const
+	{
+		MaterialProperty properties = static_cast<MaterialProperty>(0);
+		for (const auto& pair : textures) properties |= pair.first;
+		for (const auto& pair : colors) properties |= pair.first;
+		for (const auto& pair : floats) properties |= pair.first;
+		for (const auto& pair : bools) properties |= pair.first;
+		return properties;
+	}
+
 	float getFloat(MaterialProperty prop, float def = 0)
 	{
 		auto temp = floats.find(prop);
@@ -93,5 +101,58 @@ struct MeshRenderer : Component
 	bool hasTexture(MaterialProperty prop)
 	{
 		return textures.find(prop) != textures.end();
+	}
+};
+
+struct MeshRenderer : Component
+{
+	std::vector<Transform*> bones = {};
+	bool castShadows = false;
+
+	std::shared_ptr<Material> material;
+
+	MaterialProperty getProperties() const
+	{
+		return material->getProperties();
+	}
+	
+	float getFloat(MaterialProperty prop, float def = 0) const
+	{
+		return material->getFloat(prop, def);
+	}
+
+	std::shared_ptr<Texture2D> getTexture(MaterialProperty prop) const
+	{
+		return material->getTexture(prop);
+	}
+
+	const Color& getColor(MaterialProperty prop, const Color& def) const
+	{
+		return material->getColor(prop, def);
+	}
+
+	void setFloat(MaterialProperty prop, float value)
+	{
+		material->setFloat(prop, value);
+	}
+
+	void setBool(MaterialProperty prop, bool value)
+	{
+		material->setBool(prop, value);
+	}
+
+	void setColor(MaterialProperty prop, const Color& value)
+	{
+		material->setColor(prop, value);
+	}
+
+	void setTexture(MaterialProperty prop, const std::shared_ptr<Texture2D> value)
+	{
+		material->setTexture(prop, value);
+	}
+
+	bool hasTexture(MaterialProperty prop) const
+	{
+		return material->hasTexture(prop);
 	}
 };

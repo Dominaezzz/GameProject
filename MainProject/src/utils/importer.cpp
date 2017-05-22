@@ -153,12 +153,69 @@ std::shared_ptr<Texture2D> loadTexture(glTF_t* gltf, const texture_t& texture)
 	return modelTexture;
 }
 
+std::shared_ptr<Material> loadMaterial(glTF_t* gltf, const material_t& material, std::vector<std::shared_ptr<Texture2D>> textures)
+{
+	std::shared_ptr<Material> modelMaterial = std::make_shared<Material>();
+	auto it = material.extensions.find("KHR_materials_common");
+	if (it == material.extensions.end()) return std::move(modelMaterial);
+
+	const nlohmann::json& mat_common = it->second;
+	const nlohmann::json& values = mat_common["values"];
+
+	if (values.count("transparency")) modelMaterial->setFloat(MaterialProperty::FloatReflectivity, values["transparency"].at(0));
+	if (values.count("shininess")) modelMaterial->setFloat(MaterialProperty::FloatShininess, values["shininess"].at(0));
+	
+	if (values.count("diffuse"))
+	{
+		const nlohmann::json& diffuse = values["diffuse"];
+		if (diffuse.is_number_integer())
+		{
+			modelMaterial->setTexture(MaterialProperty::TextureDiffuse, textures[diffuse]);
+		}
+		else if (diffuse.is_array())
+		{
+			if (diffuse.size() == 1)
+			{
+				modelMaterial->setTexture(MaterialProperty::TextureDiffuse, textures[diffuse.at(0)]);
+			}
+			else if (diffuse.size() == 4)
+			{
+				Color color = Color(diffuse.at(0), diffuse.at(1), diffuse.at(2), diffuse.at(3));
+				modelMaterial->setColor(MaterialProperty::ColorDiffuse, color);
+			}
+		}
+	}
+	if (values.count("specular"))
+	{
+		const nlohmann::json& specular = values["specular"];
+		if (specular.is_number_integer())
+		{
+			modelMaterial->setTexture(MaterialProperty::TextureSpecular, textures[specular]);
+		}
+		else if (specular.is_array())
+		{
+			if (specular.size() == 1)
+			{
+				modelMaterial->setTexture(MaterialProperty::TextureSpecular, textures[specular.at(0)]);
+			}
+			else if (specular.size() == 4)
+			{
+				Color color(specular.at(0), specular.at(1), specular.at(2), specular.at(3));
+				modelMaterial->setColor(MaterialProperty::ColorSpecular, color);
+			}
+		}
+	}
+	
+	return std::move(modelMaterial);
+}
+
 GameObject * Importer::load(World & world, const std::string& path)
 {
 	glTF_t* gltf = ygltf::load_gltf(path);
 
 	std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers;
 	std::vector<std::shared_ptr<Texture2D>> textures;
+	std::vector<std::shared_ptr<Material>> materials;
 	std::vector<std::shared_ptr<Mesh>> meshes;
 	std::vector<GameObject*> nodes;
 
@@ -174,25 +231,9 @@ GameObject * Importer::load(World & world, const std::string& path)
 		}
 		else vertexBuffers.push_back(nullptr);
 	}
-	for (const texture_t& texture : gltf->textures)
-	{
-		textures.push_back(loadTexture(gltf, texture));
-	}
-
-//	for (const material_t& material : gltf->materials)
-//	{
-//		auto it = material.extensions.find("KHR_materials_common");
-//		if (it != material.extensions.end())
-//		{
-//			const nlohmann::json& comm = it->second;
-//			
-//		}
-//	}
-
-	for (const mesh_t& mesh : gltf->meshes)
-	{
-		meshes.push_back(loadMesh(gltf, mesh, vertexBuffers));
-	}
+	for (const texture_t& texture : gltf->textures) textures.push_back(loadTexture(gltf, texture));
+	for (const material_t& material : gltf->materials) materials.push_back(loadMaterial(gltf, material, textures));
+	for (const mesh_t& mesh : gltf->meshes) meshes.push_back(loadMesh(gltf, mesh, vertexBuffers));
 
 	// Parse in nodes.
 	for (const node_t& node : gltf->nodes)
@@ -220,67 +261,7 @@ GameObject * Importer::load(World & world, const std::string& path)
 				filter->mesh = meshes[node.mesh];
 
 				MeshRenderer* renderer = object->addComponent<MeshRenderer>();
-				const material_t& material = gltf->materials[gltf->meshes[node.mesh].primitives[0].material];
-
-				auto it = material.extensions.find("KHR_materials_common");
-				if (it != material.extensions.end())
-				{
-					const nlohmann::json& mat_common = it->second;
-					const nlohmann::json& values = mat_common["values"];
-					
-					if (values.count("transparency"))
-					{
-						renderer->setFloat(MaterialProperty::FloatReflectivity, values["transparency"].at(0));
-					}
-					if (values.count("shininess"))
-					{
-						renderer->setFloat(MaterialProperty::FloatShininess, values["shininess"].at(0));
-					}
-					if (values.count("diffuse"))
-					{
-						const nlohmann::json& diffuse = values["diffuse"];
-						if (diffuse.is_number_integer())
-						{
-							renderer->setTexture(MaterialProperty::TextureDiffuse, textures[diffuse]);
-							renderer->setColor(MaterialProperty::ColorDiffuse, Color::White);
-						}
-						else if (diffuse.is_array())
-						{
-							if (diffuse.size() == 1)
-							{
-								renderer->setTexture(MaterialProperty::TextureDiffuse, textures[diffuse.at(0)]);
-								renderer->setColor(MaterialProperty::ColorDiffuse, Color::White);
-							}
-							else if (diffuse.size() == 4)
-							{
-								Color color = Color(diffuse.at(0), diffuse.at(1), diffuse.at(2), diffuse.at(3));
-								renderer->setColor(MaterialProperty::ColorDiffuse, color);
-							}
-						}
-					}
-					if (values.count("specular"))
-					{
-						const nlohmann::json& specular = values["specular"];
-						if (specular.is_number_integer())
-						{
-							renderer->setTexture(MaterialProperty::TextureSpecular, textures[specular]);
-							renderer->setColor(MaterialProperty::ColorSpecular, Color::White);
-						}
-						else if (specular.is_array())
-						{
-							if (specular.size() == 1)
-							{
-								renderer->setTexture(MaterialProperty::TextureSpecular, textures[specular.at(0)]);
-								renderer->setColor(MaterialProperty::ColorSpecular, Color::White);
-							}
-							else if (specular.size() == 4)
-							{
-								Color color(specular.at(0), specular.at(1), specular.at(2), specular.at(3));
-								renderer->setColor(MaterialProperty::ColorSpecular, color);
-							}
-						}
-					}
-				}
+				renderer->material = materials[gltf->meshes[node.mesh].primitives[0].material];
 
 				if (node.skin != -1)
 				{
@@ -316,16 +297,11 @@ GameObject * Importer::load(World & world, const std::string& path)
 	}
 
 	const scene_t& mainScene = gltf->scenes[gltf->scene];
-	if (mainScene.nodes.size() == 1)
-	{
-		return nodes[mainScene.nodes[0]];
-	}
+	if (mainScene.nodes.size() == 1) return nodes[mainScene.nodes[0]];
 
 	GameObject* root = world.newGameObject();
 	Transform* transform = root->addComponent<Transform>();
-	for (int rootNode : mainScene.nodes)
-	{
-		transform->addChild(nodes[rootNode]->getComponent<Transform>());
-	}
+	for (int rootNode : mainScene.nodes) transform->addChild(nodes[rootNode]->getComponent<Transform>());
+	
 	return root;
 }
