@@ -24,7 +24,7 @@ public:
 	std::tuple<Components*...> components;
 
 	template <typename T>
-	T* get()
+	T* get() const
 	{
 		return std::get<T*>(components);
 	}

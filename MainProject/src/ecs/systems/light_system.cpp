@@ -15,9 +15,9 @@ void LightSystem::update(float dt)
 
 void LightSystem::setBaseLight(Lights::BaseLight& baseLight, const Light& light)
 {
-	baseLight.color.x = light.color.r / 255.0F;
-	baseLight.color.y = light.color.g / 255.0F;
-	baseLight.color.z = light.color.b / 255.0F;
+	baseLight.color.x = light.color.r;
+	baseLight.color.y = light.color.g;
+	baseLight.color.z = light.color.b;
 	baseLight.intensity = light.intensity;
 }
 

@@ -1,13 +1,14 @@
 #include "terrain_system.h"
 
-struct Vertex
-{
-	Vector3 position;
-	Vector2 texCoords;
-	Vector3 normal;
-};
 void generateTerrain(Mesh& mesh)
 {
+	struct Vertex
+	{
+		Vector3 position;
+		Vector2 texCoords;
+		Vector3 normal;
+	};
+
 	const size_t VERTEX_COUNT = 128;
 
 	std::array<Vertex, VERTEX_COUNT * VERTEX_COUNT> vertices;
