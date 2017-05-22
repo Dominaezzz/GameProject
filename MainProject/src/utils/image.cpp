@@ -4,7 +4,7 @@
 
 #include "image.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "ext/stb_image.h"
 #include <sstream>
 
 Image::Image(std::string file) {

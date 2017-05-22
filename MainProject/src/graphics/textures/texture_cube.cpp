@@ -1,5 +1,5 @@
 #include "texture_cube.h"
-#include "../../utils/stb_image.h"
+#include "../../utils/ext/stb_image.h"
 
 TextureCube::TextureCube(GLsizei size, PixelFormat internalFormat)
 {
@@ -11,7 +11,7 @@ TextureCube::TextureCube(GLsizei size, PixelFormat internalFormat)
 		{
 			glTexImage2D(i, 0, this->internalFormat, this->size, this->size, 0, this->internalFormat, GL_UNSIGNED_BYTE, nullptr);
 		}
-		setFilter(LINEAR, LINEAR);
+		setFilter(MinFilter::LINEAR, MagFilter::LINEAR);
 		setWrap(CLAMP_TO_EDGE, CLAMP_TO_EDGE, CLAMP_TO_EDGE);
 
 		//  if (useMipMaps)

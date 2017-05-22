@@ -1,6 +1,6 @@
 #include "texture2d.h"
 //#define STB_IMAGE_IMPLEMENTATION
-#include "../../utils/stb_image.h"
+#include "../../utils/ext/stb_image.h"
 
 
 Texture2D::Texture2D(GLsizei width, GLsizei height, PixelFormat internalFormat) {
@@ -8,10 +8,10 @@ Texture2D::Texture2D(GLsizei width, GLsizei height, PixelFormat internalFormat) 
 	this->height = height;
 	this->internalFormat = internalFormat;
 
-	setFilter(LINEAR, LINEAR);
-	setWrap(REPEAT, REPEAT);
-
 	temporaryBind([this]() {
+		setFilter(MinFilter::LINEAR, MagFilter::LINEAR);
+		setWrap(REPEAT, REPEAT);
+
 		glTexImage2D(GL_TEXTURE_2D, 0, this->internalFormat, this->width, this->height, 0, this->internalFormat, GL_UNSIGNED_BYTE, nullptr);
 
 		//  if (useMipMaps)
@@ -107,6 +107,15 @@ std::shared_ptr<Texture2D> Texture2D::fromFile(std::string path, bool useMipMaps
 
 	auto texture = std::make_shared<Texture2D>(width, height, RGBA);
 	texture->setData<GLubyte>(data, format);
+
+	if (useMipMaps)
+	{
+		texture->temporaryBind([texture]()
+		{
+			texture->generateMipmap();
+			texture->setFilter(MinFilter::LINEAR_MIPMAP_LINEAR, MagFilter::LINEAR);
+		});
+	}
 
 	stbi_image_free(data);
 

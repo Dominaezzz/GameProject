@@ -17,10 +17,19 @@ enum PixelFormat : GLenum
 	STENCIL_INDEX = GL_STENCIL_INDEX,
 	DEPTH_STENCIL = GL_DEPTH_STENCIL
 };
-enum Filter : GLint
+enum class MinFilter : GLint
 {
+	NEAREST = GL_NEAREST,
 	LINEAR = GL_LINEAR,
-	NEAREST = GL_NEAREST
+	NEAREST_MIPMAP_NEAREST = GL_NEAREST_MIPMAP_NEAREST,
+	LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST,
+	NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,
+	LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR
+};
+enum class MagFilter : GLint
+{
+	NEAREST = GL_NEAREST,
+	LINEAR = GL_LINEAR
 };
 enum Wrap : GLint
 {
@@ -28,11 +37,16 @@ enum Wrap : GLint
 	CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE
 };
 
+class Hack
+{
+protected:
+	static GLuint activeUnit;
+};
+
 template<GLenum target, GLenum binding>
-class Texture
+class Texture : Hack
 {
 	static std::array<GLuint, 32> boundTextures;
-	static GLuint activeUnit;
 protected:
 	GLuint texture;
 public:
@@ -58,10 +72,17 @@ public:
 			glBindTexture(target, boundTextures[activeUnit] = 0);
 		}
 	}
-	void setFilter(Filter min, Filter mag) {
+	void setFilter(MinFilter min, MagFilter mag) {
 		temporaryBind([min, mag]() {
-			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, min);
-			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, mag);
+			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, static_cast<GLint>(min));
+			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, static_cast<GLint>(mag));
+		});
+	}
+	void generateMipmap()
+	{
+		temporaryBind([]()
+		{
+			glGenerateMipmap(target);
 		});
 	}
 protected:
@@ -80,6 +101,3 @@ protected:
 
 template<GLenum target, GLenum binding>
 std::array<GLuint, 32> Texture<target, binding>::boundTextures;
-
-template<GLenum target, GLenum binding>
-GLuint Texture<target, binding>::activeUnit = 0;
