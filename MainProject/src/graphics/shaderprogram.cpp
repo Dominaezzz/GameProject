@@ -12,6 +12,11 @@ ShaderProgram::~ShaderProgram()
 	glDeleteProgram(program);
 }
 
+GLuint ShaderProgram::getId() const
+{
+	return program;
+}
+
 void ShaderProgram::begin() const
 {
 	glUseProgram(program);

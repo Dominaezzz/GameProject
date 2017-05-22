@@ -7,7 +7,7 @@
 #include <memory>
 #include "shader.h"
 
-class ShaderProgram
+class ShaderProgram : public GLResource
 {
 	GLuint program;
 	std::vector<std::shared_ptr<Shader>> shaders;
@@ -16,6 +16,7 @@ class ShaderProgram
 public:
 	ShaderProgram();
 	~ShaderProgram();
+	GLuint getId() const override;
 	void begin() const;
 	void end() const;
 	void compile();
