@@ -249,6 +249,7 @@
   <ItemGroup>
     <None Include="res\Models\2CylinderEngine.gltf" />
     <None Include="res\Models\Box.gltf" />
+    <None Include="res\Models\BoxAnimated.gltf" />
     <None Include="res\Models\BoxTextured.gltf" />
     <None Include="res\Models\Duck.gltf" />
     <None Include="res\Models\SmilingFace.gltf" />

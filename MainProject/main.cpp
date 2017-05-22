@@ -324,6 +324,13 @@ void setUpModels(World& world)
 //		t->Position = Vector3(-50, 10, -90);
 //		t->Scale = Vector3(0.05f);
 //	}
+
+	GameObject* boxAnim = Importer::load(world, "res/Models/BoxAnimated.gltf");
+	{
+		auto t = boxAnim->getComponent<Transform>();
+		t->Position = Vector3(-30, 0, -10);
+		t->Scale = Vector3(5);
+	}
 }
 
 int main() {
