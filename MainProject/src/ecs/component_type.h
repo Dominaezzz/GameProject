@@ -7,12 +7,14 @@
 #include "components/light.h"
 #include "components/terrain.h"
 #include "components/particle_emitter.h"
+#include "components/mesh_filter.h"
+#include "components/mesh_renderer.h"
 
 template<typename ComponentClass>
 struct ComponentType
 {
 	static_assert(std::is_base_of<Component, ComponentClass>(), "Must be a subclass of component");
-	explicit operator int() const
+	constexpr explicit operator int() const
 	{
 		throw std::invalid_argument("Bit flag not implemented for component type");
 	}
@@ -21,7 +23,7 @@ struct ComponentType
 template<>
 struct ComponentType<Transform>
 {
-	operator int() const
+	constexpr operator int() const
 	{
 		return 1 << 0;
 	}
@@ -30,7 +32,7 @@ struct ComponentType<Transform>
 template<>
 struct ComponentType<Camera>
 {
-	operator int() const
+	constexpr operator int() const
 	{
 		return 1 << 1;
 	}
@@ -39,7 +41,7 @@ struct ComponentType<Camera>
 template<>
 struct ComponentType<Light>
 {
-	operator int() const
+	constexpr operator int() const
 	{
 		return 1 << 2;
 	}
@@ -48,7 +50,7 @@ struct ComponentType<Light>
 template<>
 struct ComponentType<Terrain>
 {
-	operator int() const
+	constexpr operator int() const
 	{
 		return 1 << 3;
 	}
@@ -57,8 +59,26 @@ struct ComponentType<Terrain>
 template<>
 struct ComponentType<ParticleEmitter>
 {
-	operator int() const
+	constexpr operator int() const
 	{
 		return 1 << 4;
+	}
+};
+
+template<>
+struct ComponentType<MeshFilter>
+{
+	constexpr operator int() const
+	{
+		return 1 << 5;
+	}
+};
+
+template<>
+struct ComponentType<MeshRenderer>
+{
+	constexpr operator int() const
+	{
+		return 1 << 6;
 	}
 };
