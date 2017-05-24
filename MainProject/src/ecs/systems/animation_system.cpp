@@ -32,21 +32,19 @@ void AnimationSystem::update(float dt)
 	{
 		Animator* animator = node.get<Animator>();
 
-		node.elapsedTime += dt * animator->speed;
-		while (node.elapsedTime > animator->duration) node.elapsedTime -= animator->duration;
+		const Animation& animation = animator->animations[0];
 
-		for(const NodeAnimation& nodeAnimation : animator->nodeAnimations)
+		node.elapsedTime += dt * animator->speed;
+		while (node.elapsedTime > animation.duration) node.elapsedTime -= animation.duration;
+
+		for(const NodeAnimation& nodeAnimation : animation.nodeAnimations)
 		{
-			Transform* transorm = nodeAnimation.transform;
+			Transform* transorm = nodeAnimation.node;
 			transorm->Position = findCurrent<Vector3>(nodeAnimation.translations, node.elapsedTime, Vector3(), vec::lerp<3, float>);
 			transorm->Rotation = findCurrent<Quaternion>(nodeAnimation.rotations, node.elapsedTime, Quaternion(), Quaternion::slerp);
 			transorm->Scale = findCurrent<Vector3>(nodeAnimation.scales, node.elapsedTime, Vector3(1), vec::lerp<3, float>);
 		}
 	}
-}
-
-void AnimationSystem::render()
-{
 }
 
 void AnimationSystem::onGameObjectEdited(GameObject* gameObject)

@@ -26,15 +26,20 @@ inline bool operator >(const KeyFrame<T>& left, const KeyFrame<T>& right)
 
 struct NodeAnimation
 {
-	Transform* transform;
+	Transform* node;
 	std::set<KeyFrame<Vector3>> translations;
 	std::set<KeyFrame<Quaternion>> rotations;
 	std::set<KeyFrame<Vector3>> scales;
 };
 
+struct Animation
+{
+	float duration;
+	std::vector<NodeAnimation> nodeAnimations;
+};
+
 struct Animator : Component
 {
-	float duration = 0;
 	float speed = 1.0f;
-	std::vector<NodeAnimation> nodeAnimations;
+	std::vector<Animation> animations;
 };

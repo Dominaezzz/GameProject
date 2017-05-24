@@ -11,8 +11,8 @@ class GameObject;
 
 class World
 {
-//	std::unordered_map<std::type_index, std::unique_ptr<System>> systems;
 	std::vector<std::unique_ptr<System>> systems;
+	std::unordered_map<std::type_index, System*> systemsMap;
 	std::vector<std::unique_ptr<GameObject>> gameObjects;
 public:
 	World();
@@ -36,9 +36,7 @@ SystemClass* World::addSystem()
 {
 	std::unique_ptr<SystemClass> system = std::make_unique<SystemClass>(this);
 	SystemClass* systemPtr = system.get();
-//	systems[typeid(SystemClass)] = system;
-
-//	systems[std::type_index(typeid(SystemClass))] = 
+	systemsMap[std::type_index(typeid(SystemClass))] = systemPtr;
 	systems.push_back(std::move(system));
 	return systemPtr;
 }
@@ -46,21 +44,24 @@ SystemClass* World::addSystem()
 template<typename SystemClass>
 SystemClass* World::getSystem() const
 {
-	return nullptr; //systems.at(std::type_index(typeid(SystemClass))).get();
+	return static_cast<SystemClass*>(systemsMap.at(std::type_index(typeid(SystemClass))));
 }
 
 template<typename SystemClass>
 bool World::hasSystem() const
 {
-	return false;// systems.count(std::type_index(typeid(SystemClass))) == 1;
+	return systemsMap.count(std::type_index(typeid(SystemClass))) > 0;
 }
 
 template <typename SystemClass>
 void World::removeSystem()
 {
-//	auto temp = systems.find(std::type_index(typeid(SystemClass)));
-//	if(temp != systems.end())
-//	{
-//		systems.erase(temp);
-//	}
+	auto temp = systemsMap.find(std::type_index(typeid(SystemClass)));
+	if(temp != systemsMap.end())
+	{
+		systems.erase(std::remove_if(systems.begin(), systems.end(), [temp](const std::unique_ptr<System>& item)
+		{
+			return item.get() == temp->second;
+		}), systems.end());
+	}
 }

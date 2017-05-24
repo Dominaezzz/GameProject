@@ -16,6 +16,5 @@ public:
 	explicit AnimationSystem(World* world);
 	~AnimationSystem() override;
 	void update(float dt) override;
-	void render() override;
 	void onGameObjectEdited(GameObject* gameObject) override;
 };
