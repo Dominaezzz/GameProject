@@ -25,6 +25,7 @@ CameraSystem::CameraSystem(World* world) : System(world)
 
 	skyBoxMesh.setVertexAttribute<Vector3>(buffer, VertexAttrib::Position, sizeof(Vector3), 0);
 	skyBoxMesh.setIndices(indices, sizeof(indices));
+	skyBoxMesh.count = 36;
 
 	skyBoxShader.add(ShaderType::VertexShader, "res/shaders/Generic/skyBox.vert");
 	skyBoxShader.add(ShaderType::FragmentShader, "res/shaders/Generic/skyBox.frag");
@@ -34,10 +35,6 @@ CameraSystem::CameraSystem(World* world) : System(world)
 }
 
 CameraSystem::~CameraSystem()
-{
-}
-
-void CameraSystem::update(float dt)
 {
 }
 
@@ -69,7 +66,7 @@ void CameraSystem::render()
 		auto& node = cameraNodes[i];
 
 		node.get<Camera>()->skyBox->bind(0);
-		skyBoxMesh.render(GL_TRIANGLES, 0, 36);
+		skyBoxMesh.render();
 		node.get<Camera>()->skyBox->unBind(0);
 	}
 	skyBoxShader.end();

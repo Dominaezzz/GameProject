@@ -7,14 +7,18 @@
 class Mesh
 {
 	VertexArray vertexArray;
-	IndexBuffer indexBuffer;
+	std::shared_ptr<IndexBuffer> indexBuffer;
 public:
+	PrimitiveType primitiveType = PrimitiveType::Triangles;
+	size_t offset = 0;
+	size_t count = 0;
+
 	Mesh();
 	~Mesh();
 	void bind() const;
 	void unBind() const;
-	void render(GLenum mode, GLuint offset = 0, int count = -1, bool autoBind = true) const;
-	void renderInstanced(GLenum mode, GLsizei instances, GLuint offset = 0, GLsizei count = -1, bool autoBind = true) const;
+	void render(bool autoBind = true) const;
+	void renderInstanced(GLsizei instances, bool autoBind = true) const;
 	void setIndices(const int* data, size_t size);
 	size_t getBufferCount() const;
 	template<typename T, typename Type = float>

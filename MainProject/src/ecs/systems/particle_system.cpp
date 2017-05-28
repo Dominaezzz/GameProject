@@ -9,6 +9,7 @@ ParticleSystem::ParticleSystem(World* world) : System(world)
 
 	particleMesh.setVertexAttribute<Vector2>(std::make_shared<VertexBuffer>(Vertices, sizeof(Vertices)), VertexAttrib::Position, sizeof(Vector2), 0);
 	particleMesh.setIndices(Indexes, sizeof(Indexes));
+	particleMesh.count = 6;
 
 	particleShader.add(ShaderType::VertexShader, "res/Shaders/Particle/particle.vert");
 	particleShader.add(ShaderType::VertexShader, "res/Shaders/Generic/math.glsl");
@@ -204,7 +205,7 @@ void ParticleSystem::render()
 		}
 		perParticleBuffer->setSubData(instances.data(), 0, node.particles.size() * sizeof(ParticleInstance));
 
-		particleMesh.renderInstanced(GL_TRIANGLES, node.particles.size(), 0, -1, false);
+		particleMesh.renderInstanced(node.particles.size(), false);
 #else
 		for(const auto& particle : node.particles)
 		{
@@ -214,7 +215,7 @@ void ParticleSystem::render()
 			glVertexAttrib1f(index, particle.textureIndex);
 			glVertexAttrib1f(blend, particle.blend);
 
-			particleMesh.render(GL_TRIANGLES, 0, 6, false);
+			particleMesh.render(false);
 		}
 #endif
 

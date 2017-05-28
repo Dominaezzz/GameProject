@@ -55,8 +55,7 @@ class LightSystem : public System
 	static void setSpotLight(Lights::SpotLight& spotLight, const Transform& transform, const Light& light);
 public:
 	explicit LightSystem(World* world);
-	~LightSystem() override;
-	void update(float dt) override;
+	~LightSystem() override = default;
 	void render() override;
 	void onGameObjectEdited(GameObject* gameObject) override;
 };

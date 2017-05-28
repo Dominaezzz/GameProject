@@ -137,7 +137,7 @@ void MeshRenderingSystem::render()
 				{
 					glUniformMatrix4fv(transformMatrix, 1, false, &node.get<Transform>()->getTransform()[0][0]);
 				}
-				meshFilter->mesh->render(GL_TRIANGLES, 0, -1, false);
+				meshFilter->mesh->render(false);
 			}
 			meshFilter->mesh->unBind();
 

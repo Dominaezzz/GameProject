@@ -1,12 +1,18 @@
 #pragma once
 
 #include <vector>
-#include <utility>
 #include <memory>
-#include <algorithm>
 #include "vertex_buffer.h"
 #include "../gl_type.h"
+#include "index_buffer.h"
 
+enum class PrimitiveType : GLenum
+{
+	Points = GL_POINTS,
+	Triangles = GL_TRIANGLES,
+	TriangleStrip = GL_TRIANGLE_STRIP,
+	TriangleFan = GL_TRIANGLE_FAN,
+};
 
 enum VertexAttrib
 {
@@ -37,16 +43,21 @@ class VertexArray
 	struct VertexAttribute
 	{
 		GLuint index;
-		std::shared_ptr<VertexBuffer> vertexBuffer;
+		size_t bufferIndex;
 	};
 	GLuint vao;
 	std::vector<VertexAttribute> vertexAttributes;
+	std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers;
+	std::shared_ptr<IndexBuffer> indexBuffer;
 public:
 	VertexArray();
 	~VertexArray();
 	void bind() const;
 	void unBind() const;
-	size_t getAttributeCount() const ;
+	void setIndexBuffer(std::shared_ptr<IndexBuffer> indexBuffer);
+	void draw(PrimitiveType type, size_t offset, size_t count, bool autoBind = true) const;
+	void drawInstanced(PrimitiveType type, size_t offest, size_t count, size_t instances, bool autoBind = true) const;
+	size_t getAttributeCount() const;
 	size_t getBufferCount() const;
 	std::shared_ptr<VertexBuffer> operator[](const int index) const;
 	template<typename T, typename Type = float>
@@ -57,13 +68,21 @@ public:
 		{
 			// TODO 14/1/2017 implement normalized.
 			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index, sizeof(T) / sizeof(float), GLType<Type>(), GL_FALSE, stride, (void *)(offset));
-//			glVertexAttribPointer(index, sizeof(T) / sizeof(float), GLType<Type>(), normalized ? GL_TRUE : GL_FALSE, stride, (void *)(offset));
+			glVertexAttribPointer(index, sizeof(T) / sizeof(Type), GLType<Type>(), GL_FALSE, stride, reinterpret_cast<void *>(offset));
 			if (isInstanced) glVertexAttribDivisor(index, 1);
 
 			VertexAttribute attribute;
 			attribute.index = index;
-			attribute.vertexBuffer = buffer;
+			auto it = std::find(vertexBuffers.begin(), vertexBuffers.end(), buffer);
+			if(it == vertexBuffers.end())
+			{
+				attribute.bufferIndex = vertexBuffers.size();
+				vertexBuffers.push_back(buffer);
+			}
+			else
+			{
+				attribute.bufferIndex = std::distance(vertexBuffers.begin(), it);
+			}
 			vertexAttributes.push_back(attribute);
 		}
 		buffer->unBind();

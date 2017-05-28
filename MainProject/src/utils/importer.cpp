@@ -29,6 +29,7 @@ std::shared_ptr<Mesh> loadMesh(glTF_t* gltf, const mesh_t& mesh, std::vector<std
 
 		int stride = gltf->bufferViews[accessor.bufferView].byteStride;
 		modelMesh->setVertexAttribute<Vector3>(vertexBuffers[accessor.bufferView], VertexAttrib::Position, stride, accessor.byteOffset);
+		modelMesh->count = accessor.count;
 	}
 
 	it = primitive.attributes.find("TEXCOORD_0");
@@ -97,21 +98,16 @@ std::shared_ptr<Mesh> loadMesh(glTF_t* gltf, const mesh_t& mesh, std::vector<std
 		if (accessor.componentType == accessor_t::componentType_t::unsigned_short_t)
 		{
 			auto temp = reinterpret_cast<const short*>(&buffer.data[bufferView.byteOffset + accessor.byteOffset]);
-			for (int i = 0; i < accessor.count; ++i)
-			{
-				indexes[i] = temp[i];
-			}
+			for (int i = 0; i < accessor.count; ++i) indexes[i] = temp[i];
 		}
 		else if (accessor.componentType == accessor_t::componentType_t::unsigned_int_t)
 		{
 			auto temp = reinterpret_cast<const unsigned int*>(&buffer.data[bufferView.byteOffset + accessor.byteOffset]);
-			for (int i = 0; i < accessor.count; ++i)
-			{
-				indexes[i] = temp[i];
-			}
+			for (int i = 0; i < accessor.count; ++i) indexes[i] = temp[i];
 		}
 
 		modelMesh->setIndices(indexes.data(), accessor.count * sizeof(int));
+		modelMesh->count = accessor.count;
 	}
 
 	return modelMesh;

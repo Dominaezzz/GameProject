@@ -5,14 +5,6 @@ LightSystem::LightSystem(World * world) : System(world)
 	lightsBuffer.bindBase(1);
 }
 
-LightSystem::~LightSystem()
-{
-}
-
-void LightSystem::update(float dt)
-{
-}
-
 void LightSystem::setBaseLight(Lights::BaseLight& baseLight, const Light& light)
 {
 	baseLight.color.x = light.color.r;

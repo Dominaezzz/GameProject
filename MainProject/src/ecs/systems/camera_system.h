@@ -24,7 +24,6 @@ class CameraSystem : public System
 public:
 	explicit CameraSystem(World* world);
 	~CameraSystem() override;
-	void update(float dt) override;
 	void render() override;
 	void onGameObjectEdited(GameObject* gameObject) override;
 };

@@ -55,6 +55,8 @@ void generateTerrain(Mesh& mesh)
 	mesh.setVertexAttribute<Vector3>(buffer, VertexAttrib::Normal, sizeof(Vertex), offsetof(Vertex, normal));
 
 	mesh.setIndices(indexes.data(), sizeof(indexes));
+
+	mesh.count = indexes.size();
 }
 
 TerrainSystem::TerrainSystem(World * world) : System(world)
@@ -91,14 +93,6 @@ TerrainSystem::TerrainSystem(World * world) : System(world)
 	terrainShader.end();
 }
 
-TerrainSystem::~TerrainSystem()
-{
-}
-
-void TerrainSystem::update(float dt)
-{
-}
-
 void TerrainSystem::render()
 {
 	glEnable(GL_BLEND);
@@ -127,7 +121,7 @@ void TerrainSystem::render()
 		if (terrain->textureG != nullptr) terrain->textureG->bind(3);
 		if (terrain->textureB != nullptr) terrain->textureB->bind(4);
 
-		terrainMesh.render(GL_TRIANGLES, 0, -1, false);
+		terrainMesh.render(false);
 
 		if (terrain->textureB != nullptr) terrain->textureB->unBind(4);
 		if (terrain->textureG != nullptr) terrain->textureG->unBind(3);

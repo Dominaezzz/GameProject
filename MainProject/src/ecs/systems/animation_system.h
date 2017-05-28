@@ -14,7 +14,7 @@ class AnimationSystem : public System
 	NodeList<AnimationNode> nodes = NodeList<AnimationNode>(ComponentType<Transform>() | ComponentType<Animator>());
 public:
 	explicit AnimationSystem(World* world);
-	~AnimationSystem() override;
+	~AnimationSystem() override = default;
 	void update(float dt) override;
 	void onGameObjectEdited(GameObject* gameObject) override;
 };

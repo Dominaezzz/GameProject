@@ -20,8 +20,6 @@ class TerrainSystem : public System
 
 public:
 	explicit TerrainSystem(World* world);
-	~TerrainSystem() override;
-	void update(float dt) override;
 	void render() override;
 	void onGameObjectEdited(GameObject* gameObject) override;
 };

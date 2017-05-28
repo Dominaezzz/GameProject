@@ -4,10 +4,6 @@ AnimationSystem::AnimationSystem(World * world) : System(world)
 {
 }
 
-AnimationSystem::~AnimationSystem()
-{
-}
-
 template<typename T>
 static T findCurrent(const std::set<KeyFrame<T>>& keyFrames, float elapsedTime, const T& def, std::function<T (const T&, const T&, float)> interpolation)
 {
