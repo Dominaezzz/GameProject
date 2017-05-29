@@ -1,4 +1,6 @@
 #pragma once
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include "../component.h"
 #include "../../utils/color.h"
 
@@ -17,9 +19,9 @@ struct Attenuation
 struct Light : Component
 {
 	LightType lightType = LightType::Directional;
-	Color color;// = Color.White;
+	Color color = Color::White;
 	float intensity = 0;
 	float range = 0;
 	Attenuation attenuation;
-	float coneAngle;// = MathHelper.PiOver4;
+	float coneAngle = M_PI_4;
 };
