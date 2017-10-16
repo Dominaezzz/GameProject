@@ -13,7 +13,6 @@ private:
 	PixelFormat internalFormat;
 public:
 	Texture2D(GLsizei width, GLsizei height, PixelFormat internalFormat);
-	Texture2D(std::string path, bool useMipMaps = false);
 	inline GLsizei getWidth() const { return width; }
 	inline GLsizei getHeight() const { return height; }
 	inline PixelFormat getFormat() const { return internalFormat; }
