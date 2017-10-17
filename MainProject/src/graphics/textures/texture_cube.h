@@ -23,14 +23,13 @@ public:
 	TextureCube(GLsizei size, PixelFormat internalFormat);
 	inline GLsizei getSize() const;
 	inline PixelFormat getFormat() const;
-	void setWrap(Wrap s, Wrap t, Wrap r);
+	void setWrap(const Wrap s, const Wrap t, const Wrap r);
 
-	template<typename Type>
-	void setData(CubeMapFace face, void* pixels, PixelFormat format, int size);
 	template<typename Type>
 	void setData(CubeMapFace face, const void* pixels, PixelFormat format);
 	template<typename Type>
 	void setSubData(CubeMapFace face, const void* pixels, PixelFormat format, int x, int y, int width, int height);
 
-	static std::unique_ptr<TextureCube> fromFile(std::string right, std::string left, std::string top, std::string bottom, std::string back, std::string front);
+	static std::unique_ptr<TextureCube> fromFile(const std::string& right, const std::string& left, const std::string& top, const std::string& bottom, const std::string
+												 & back, const std::string& front);
 };

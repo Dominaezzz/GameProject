@@ -28,9 +28,13 @@ public:
 	explicit Buffer(const size_t size = 0, const BufferUsage usage = StaticDraw) : Buffer(nullptr, size, usage)
 	{
 	}
-	Buffer(const void* data, const size_t size, const BufferUsage usage = StaticDraw)
+	Buffer(const void* data, const size_t size, const BufferUsage usage = StaticDraw) : size(size)
 	{
+#ifdef USE_OPENGL_DSA
+		glCreateBuffers(1, &buffer);
+#else
 		glGenBuffers(1, &buffer);
+#endif
 		setData(data, size, usage);
 	}
 	void bind() const
@@ -58,21 +62,33 @@ protected:
 
 	void setData(const void* data, const size_t size, const BufferUsage usage)
 	{
+#ifdef USE_OPENGL_DSA
+		glNamedBufferData(this->buffer, size, data, usage);
+#else
 		bind();
 		glBufferData(target, size, data, usage);
+#endif
 		this->size = size;
 	}
 	void setSubData(const void* data, const size_t offset, const size_t size)
 	{
 		if ((offset + size) > this->size) throw std::invalid_argument("");
+#ifdef USE_OPENGL_DSA
+		glNamedBufferSubData(this->buffer, offset, size, data);
+#else
 		bind();
 		glBufferSubData(target, offset, size, data);
+#endif
 	}
 	void getSubData(void* data, const size_t offset, const size_t size)
 	{
-		if (offset < 0 || offset >= this->size || (offset + size) > this->size) throw std::invalid_argument("");
+		if ((offset + size) > this->size) throw std::invalid_argument("");
+#ifdef USE_OPENGL_DSA
+		glGetNamedBufferSubData(this->buffer, offset, size, data);
+#else
 		bind();
 		glGetBufferSubData(target, offset, size, data);
+#endif
 	}
 };
 
@@ -86,19 +102,19 @@ class BufferRange : public virtual GLResource
 protected:
 	~BufferRange() = default;
 public:
-	void bindBase(int index) const
+	void bindBase(const int index) const
 	{
 		glBindBufferBase(rangeTarget, index, getId());
 	}
-	void unBindBase(int index) const
+	void unBindBase(const int index) const
 	{
 		glBindBufferBase(rangeTarget, index, 0);
 	}
-	void bindRange(int index, int offset, int size) const
+	void bindRange(const int index, const int offset, const int size) const
 	{
 		glBindBufferRange(rangeTarget, index, getId(), offset, size);
 	}
-	void unBindRange(int index, int offset, int size) const
+	void unBindRange(const int index, const int offset, const int size) const
 	{
 		glBindBufferRange(rangeTarget, index, 0, offset, size);
 	}

@@ -1,43 +1,68 @@
 #include "texture2d.h"
-//#define STB_IMAGE_IMPLEMENTATION
 #include "../../utils/ext/stb_image.h"
 
 
-Texture2D::Texture2D(GLsizei width, GLsizei height, PixelFormat internalFormat) {
-	this->width = width;
-	this->height = height;
-	this->internalFormat = internalFormat;
-
+Texture2D::Texture2D(const GLsizei width, const GLsizei height, const PixelFormat internalFormat) : width(width), height(height), internalFormat(internalFormat)
+{
+#ifdef USE_OPENGL_DSA
+	glTextureStorage2D(this->texture, 1, GL_RGBA8, width, height);
+	setFilter(MinFilter::LINEAR, MagFilter::LINEAR);
+	setWrap(REPEAT, REPEAT);
+#else
 	temporaryBind([this]() {
 		setFilter(MinFilter::LINEAR, MagFilter::LINEAR);
 		setWrap(REPEAT, REPEAT);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, this->internalFormat, this->width, this->height, 0, this->internalFormat, GL_UNSIGNED_BYTE, nullptr);
 	});
+#endif
+}
+
+GLsizei Texture2D::getWidth() const
+{
+	return width;
+}
+
+GLsizei Texture2D::getHeight() const
+{
+	return height;
+}
+
+PixelFormat Texture2D::getFormat() const
+{
+	return internalFormat;
+}
+
+void Texture2D::setWrap(const Wrap s, const Wrap t)
+{
+#ifdef USE_OPENGL_DSA
+	glTextureParameteri(this->texture, GL_TEXTURE_WRAP_S, s);
+	glTextureParameteri(this->texture, GL_TEXTURE_WRAP_T, t);
+#else
+		temporaryBind([s, t]() {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t);
+		});
+#endif
 }
 
 template<typename Type>
-void Texture2D::setData(const void* pixels, PixelFormat format, int width, int height) {
-	temporaryBind([this, pixels, format, width, height](){
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GLType<Type>(), pixels);
-		this->width = width;
-		this->height = height;
-	});
-}
-
-template<typename Type>
-void Texture2D::setData(const void* pixels, PixelFormat format) {
+void Texture2D::setData(const void* pixels, const PixelFormat format) {
 	setSubData<Type>(pixels, format, 0, 0, width, height);
 }
 
 template<typename Type>
 void Texture2D::setSubData(const void* pixels, PixelFormat format, int x, int y, int width, int height) {
+#ifdef USE_OPENGL_DSA
+	glTextureSubImage2D(this->texture, 0, x, y, width, height, format, GLType<Type>(), pixels);
+#else
 	temporaryBind([this, pixels, format, x, y, width, height]() {
 		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, format, GLType<Type>(), pixels);
 	});
+#endif
 }
 
-std::shared_ptr<Texture2D> Texture2D::fromFile(std::string path, bool useMipMaps) {
+std::shared_ptr<Texture2D> Texture2D::fromFile(const std::string& path, const bool useMipMaps) {
 	stbi_set_flip_vertically_on_load(true);
 
 	int width, height, components;
@@ -67,11 +92,8 @@ std::shared_ptr<Texture2D> Texture2D::fromFile(std::string path, bool useMipMaps
 
 	if (useMipMaps)
 	{
-		texture->temporaryBind([texture]()
-		{
-			texture->generateMipmap();
-			texture->setFilter(MinFilter::LINEAR_MIPMAP_LINEAR, MagFilter::LINEAR);
-		});
+		texture->generateMipmap();
+		texture->setFilter(MinFilter::LINEAR_MIPMAP_LINEAR, MagFilter::LINEAR);
 	}
 
 	stbi_image_free(data);
