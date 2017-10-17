@@ -1,4 +1,6 @@
 #pragma once
+#define USE_OPENGL_DSA
+
 #include <GL/glew.h>
 
 class GLResource
