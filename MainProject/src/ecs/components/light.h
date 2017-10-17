@@ -23,5 +23,5 @@ struct Light : Component
 	float intensity = 0;
 	float range = 0;
 	Attenuation attenuation;
-	float coneAngle = M_PI_4;
+	float coneAngle = static_cast<float>(M_PI_4);
 };
