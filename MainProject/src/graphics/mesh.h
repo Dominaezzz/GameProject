@@ -4,9 +4,8 @@
 #include "buffers/vertex_array.h"
 #include "buffers/index_buffer.h"
 
-class Mesh
+class Mesh : VertexArray
 {
-	VertexArray vertexArray;
 	std::shared_ptr<IndexBuffer> indexBuffer;
 public:
 	PrimitiveType primitiveType = PrimitiveType::Triangles;
@@ -15,8 +14,8 @@ public:
 
 	Mesh();
 	~Mesh();
-	void bind() const;
-	void unBind() const;
+	using VertexArray::bind;
+	using VertexArray::unBind;
 	void render(bool autoBind = true) const;
 	void renderInstanced(GLsizei instances, bool autoBind = true) const;
 	void setIndices(const int* data, size_t size);
@@ -24,6 +23,6 @@ public:
 	template<typename T, typename Type = float>
 	void setVertexAttribute(std::shared_ptr<VertexBuffer> buffer, unsigned int index, int stride, int offset, bool normalized = false, bool isInstanced = false)
 	{
-		vertexArray.setAttribute<T, Type>(buffer, index, stride, offset, normalized, isInstanced);
+		VertexArray::setAttribute<T, Type>(buffer, index, stride, offset, normalized, isInstanced);
 	}
 };
