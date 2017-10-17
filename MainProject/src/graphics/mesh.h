@@ -16,10 +16,10 @@ public:
 	~Mesh();
 	using VertexArray::bind;
 	using VertexArray::unBind;
+	using VertexArray::getBufferCount;
 	void render(bool autoBind = true) const;
 	void renderInstanced(GLsizei instances, bool autoBind = true) const;
 	void setIndices(const int* data, size_t size);
-	size_t getBufferCount() const;
 	template<typename T, typename Type = float>
 	void setVertexAttribute(std::shared_ptr<VertexBuffer> buffer, unsigned int index, int stride, int offset, bool normalized = false, bool isInstanced = false)
 	{

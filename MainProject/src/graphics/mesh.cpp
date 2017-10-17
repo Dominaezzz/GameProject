@@ -19,8 +19,3 @@ void Mesh::setIndices(const int* data, size_t size)
 	if (indexBuffer == nullptr) VertexArray::setIndexBuffer(indexBuffer = std::make_shared<IndexBuffer>());
 	indexBuffer->setData(data, size);
 }
-
-size_t Mesh::getBufferCount() const
-{
-	return VertexArray::getBufferCount();
-}
