@@ -20,7 +20,7 @@ class CameraSystem : public System
 	NodeList<CameraNode> cameraNodes = NodeList<CameraNode>(ComponentType<Transform>() | ComponentType<Camera>());
 	Mesh skyBoxMesh;
 	ShaderProgram skyBoxShader;
-	UniformBuffer cameraBuffer = UniformBuffer(sizeof(Matrices), StreamDraw);
+	UniformBuffer cameraBuffer;
 public:
 	explicit CameraSystem(World* world);
 	~CameraSystem() override;

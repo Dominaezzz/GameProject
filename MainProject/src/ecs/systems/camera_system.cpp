@@ -1,6 +1,6 @@
 #include "camera_system.h"
 
-CameraSystem::CameraSystem(World* world) : System(world)
+CameraSystem::CameraSystem(World* world) : System(world), cameraBuffer(sizeof(Matrices), StreamDraw)
 {
 	const int indices[] =
 	{
@@ -20,8 +20,8 @@ CameraSystem::CameraSystem(World* world) : System(world)
 		Vector3(-Size, -Size,  Size), Vector3(-Size,  Size,  Size),
 		Vector3( Size, -Size,  Size), Vector3( Size,  Size,  Size)
 	};
-	
-	auto buffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
+
+	const auto buffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
 
 	skyBoxMesh.setVertexAttribute<Vector3>(buffer, VertexAttrib::Position, sizeof(Vector3), 0);
 	skyBoxMesh.setIndices(indices, sizeof(indices));

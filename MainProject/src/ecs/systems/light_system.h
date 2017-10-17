@@ -46,7 +46,7 @@ class LightSystem : public System
 	} lights;
 	static_assert(sizeof(Lights) == 512, "Size is incorrect");
 
-	UniformBuffer lightsBuffer = UniformBuffer(sizeof(Lights), StreamDraw);
+	UniformBuffer lightsBuffer;
 	NodeList<LightNode> lightNodes = NodeList<LightNode>(ComponentType<Transform>() | ComponentType<Light>());
 
 	static void setBaseLight(Lights::BaseLight& baseLight, const Light& light);

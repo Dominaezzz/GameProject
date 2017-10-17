@@ -1,6 +1,6 @@
 #include "light_system.h"
 
-LightSystem::LightSystem(World * world) : System(world)
+LightSystem::LightSystem(World * world) : System(world), lightsBuffer(sizeof(Lights), StreamDraw)
 {
 	lightsBuffer.bindBase(1);
 }
