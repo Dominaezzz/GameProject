@@ -1,7 +1,10 @@
 #pragma once
-#include "../component.h"
+#include <map>
 #include <vector>
+#include "../component.h"
 #include "transform.h"
+#include "../../graphics/textures/texture2d.h"
+#include "../../utils/color.h"
 
 enum class MaterialProperty : size_t
 {
