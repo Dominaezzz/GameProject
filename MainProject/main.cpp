@@ -9,7 +9,6 @@
 #include "src/graphics/mesh.h"
 #include "src/graphics/textures/texture2d.h"
 #include "src/math/vector.h"
-#include "src/math/matrix.h"
 #include "src/ecs/world.h"
 #include "src/ecs/systems/camera_system.h"
 #include "src/ecs/systems/light_system.h"
@@ -18,71 +17,6 @@
 #include "src/utils/importer.h"
 #include "src/ecs/systems/mesh_rendering_system.h"
 #include "src/ecs/systems/animation_system.h"
-
-void old_picture_render(Window& window)
-{
-	Vector2 positions[] = {
-		Vector2(-0.5f, -0.5f),
-		Vector2(0.5f, -0.5f),
-		Vector2(0.5f,  0.5f),
-		Vector2(-0.5f,  0.5f)
-	};
-	int indices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	ShaderProgram shader;
-	shader.add(ShaderType::VertexShader, "res/shaders/main.vert");
-	shader.add(ShaderType::FragmentShader, "res/shaders/main.frag");
-	shader.compile();
-
-	Mesh mesh;
-
-	mesh.setVertexAttribute<Vector2>(
-		std::make_shared<VertexBuffer>(positions, sizeof(positions), BufferUsage::StaticDraw),
-		shader.getAttributeLocation("position"),
-		sizeof(Vector2),
-		0
-		);
-	mesh.setIndices(indices, 6 * sizeof(int));
-
-	std::shared_ptr<Texture2D> image = Texture2D::fromFile("res/images/Cover.jpg");
-
-	glClearColor(0.2f, 0.2f, 1.0f, 1);
-
-	clock_t start = clock();
-	clock_t timer = 0;
-	while (!window.shouldClose())
-	{
-		window.pollEvents();
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		shader.begin();
-		{
-			image->bind(0);
-			mesh.render(GL_TRIANGLES);
-			//  mesh.renderInstanced(shader, GL_TRIANGLES, 1000);
-			//  for (size_t i = 0; i < 1000; i++)
-			//  {
-			//  	mesh.render(shader, GL_TRIANGLES);
-			//  }
-		}
-		shader.end();
-
-		window.swapBuffers();
-
-		clock_t period = clock() - start;
-		timer += period;
-		if (timer > CLOCKS_PER_SEC)
-		{
-			std::cout << (double(CLOCKS_PER_SEC) / period) << " FPS" << std::endl;
-			timer -= CLOCKS_PER_SEC;
-		}
-		start = clock();
-	}
-}
 
 void setUpGround(World& world)
 {
@@ -334,14 +268,71 @@ void setUpModels(World& world)
 	}
 }
 
+void APIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity,
+	GLsizei length, const GLchar* message, const void* userParam) {
+	using std::cout;
+	using std::endl;
+	if(type != GL_DEBUG_TYPE_ERROR)
+	{
+		return;
+	}
+	std::cout << "---------------------opengl-callback-start------------" << std::endl;
+	cout << "message: " << message << endl;
+	cout << "type: ";
+	switch (type) {
+	case GL_DEBUG_TYPE_ERROR:
+		cout << "ERROR";
+		break;
+	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+		cout << "DEPRECATED_BEHAVIOR";
+		break;
+	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+		cout << "UNDEFINED_BEHAVIOR";
+		break;
+	case GL_DEBUG_TYPE_PORTABILITY:
+		cout << "PORTABILITY";
+		break;
+	case GL_DEBUG_TYPE_PERFORMANCE:
+		cout << "PERFORMANCE";
+		break;
+	case GL_DEBUG_TYPE_OTHER:
+		cout << "OTHER";
+		break;
+	}
+	cout << endl;
+
+	cout << "id: " << id << endl;
+	cout << "severity: ";
+	switch (severity) {
+	case GL_DEBUG_SEVERITY_LOW:
+		cout << "LOW";
+		break;
+	case GL_DEBUG_SEVERITY_MEDIUM:
+		cout << "MEDIUM";
+		break;
+	case GL_DEBUG_SEVERITY_HIGH:
+		cout << "HIGH";
+		break;
+	}
+	cout << endl;
+	cout << "---------------------opengl-callback-end--------------" << endl;
+}
+
 int main() {
 
 	Window window("Main Window", 1080, 720);
 	window.setSwapInterval(0);
 
 	std::cout << "OpenGL " << glGetString(GL_VERSION) << std::endl << std::endl;
-
-	//old_picture_render(window);
+	if (glDebugMessageCallback) {
+		std::cout << "Register OpenGL debug callback " << std::endl;
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(openglCallbackFunction, nullptr);
+		GLuint unusedIds = 0;
+		glDebugMessageControl(GL_DEBUG_SOURCE_API, GL_DEBUG_TYPE_ERROR, GL_DEBUG_SEVERITY_HIGH, 0, &unusedIds, true);
+	}
+	else
+		std::cout << "glDebugMessageCallback not available" << std::endl;
 
 	glEnable(GL_CULL_FACE);
 //	glEnable(GL_ALPHA_TEST);
@@ -370,11 +361,11 @@ int main() {
 		"res/SkyBox/back.png", "res/SkyBox/front.png"
 	);
 	camera->skyBox = temp.get();
-	camera->fieldOfView = 70 * (M_PI / 180.0F);
+	camera->fieldOfView = static_cast<float>(70 * (M_PI / 180.0F));
 	camera->near = 0.1f;
 	camera->far = 1000.0f;
-	camera->viewportWidth = window.getWidth();
-	camera->viewportHeight = window.getHeight();
+	camera->viewportWidth = static_cast<float>(window.getWidth());
+	camera->viewportHeight = static_cast<float>(window.getHeight());
 
 	setUpGround(world);
 	setUpLights(world);
