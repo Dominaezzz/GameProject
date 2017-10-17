@@ -22,14 +22,18 @@ void VertexArray::unBind() const
 	glBindVertexArray(0);
 }
 
-void VertexArray::setIndexBuffer(std::shared_ptr<IndexBuffer> indexBuffer)
+void VertexArray::setIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
 {
+	this->indexBuffer = indexBuffer;
+#ifdef USE_OPENGL_DSA
+	glVertexArrayElementBuffer(this->vao, indexBuffer->getId());
+#else
 	bind();
 	{
-		this->indexBuffer = indexBuffer;
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->getId());
 	}
 	unBind();
+#endif
 }
 
 void VertexArray::draw(PrimitiveType type, size_t offset, size_t count, bool autoBind) const

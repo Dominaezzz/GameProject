@@ -54,7 +54,7 @@ public:
 	~VertexArray();
 	void bind() const;
 	void unBind() const;
-	void setIndexBuffer(std::shared_ptr<IndexBuffer> indexBuffer);
+	void setIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer);
 	void draw(PrimitiveType type, size_t offset, size_t count, bool autoBind = true) const;
 	void drawInstanced(PrimitiveType type, size_t offest, size_t count, size_t instances, bool autoBind = true) const;
 	size_t getAttributeCount() const;
