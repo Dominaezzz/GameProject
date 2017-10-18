@@ -5,14 +5,14 @@ AnimationSystem::AnimationSystem(World * world) : System(world)
 }
 
 template<typename T>
-static T findCurrent(const std::set<KeyFrame<T>>& keyFrames, float elapsedTime, const T& def, std::function<T (const T&, const T&, float)> interpolation)
+static T findCurrent(const std::set<KeyFrame<T>>& keyFrames, float elapsedTime, const T& def, const std::function<T (const T&, const T&, float)>& interpolation)
 {
 	for (auto it = keyFrames.begin(); it != keyFrames.end(); ++it)
 	{
 		const KeyFrame<T>& keyFrame = *it;
 		if (keyFrame.timeFrame > elapsedTime)
 		{
-			const KeyFrame<T>& previousKeyFrame = it == keyFrames.begin() ? *keyFrames.rbegin() : *it--;
+			const KeyFrame<T>& previousKeyFrame = it == keyFrames.begin() ? *keyFrames.rbegin() : *--it;
 			const KeyFrame<T>& nextKeyFrame = keyFrame;
 			float blend = (elapsedTime - previousKeyFrame.timeFrame) / (nextKeyFrame.timeFrame - previousKeyFrame.timeFrame);
 
