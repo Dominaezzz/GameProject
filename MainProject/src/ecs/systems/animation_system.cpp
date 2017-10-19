@@ -7,19 +7,14 @@ AnimationSystem::AnimationSystem(World * world) : System(world)
 template<typename T>
 static T findCurrent(const KeyFrames<T>& keyFrames, float elapsedTime, const T& def, const std::function<T (const T&, const T&, float)>& interpolation)
 {
-	for (auto it = keyFrames.begin(); it != keyFrames.end(); ++it)
-	{
-		const KeyFrame<T>& keyFrame = *it;
-		if (keyFrame.timeFrame > elapsedTime)
-		{
-			const KeyFrame<T>& previousKeyFrame = it == keyFrames.begin() ? *keyFrames.rbegin() : *--it;
-			const KeyFrame<T>& nextKeyFrame = keyFrame;
-			float blend = (elapsedTime - previousKeyFrame.timeFrame) / (nextKeyFrame.timeFrame - previousKeyFrame.timeFrame);
+	auto it = keyFrames.upper_bound(elapsedTime);
+	if (it == keyFrames.begin() || it == keyFrames.end()) return def;
 
-			return interpolation(previousKeyFrame.value, nextKeyFrame.value, blend);
-		}
-	}
-	return def;
+	const KeyFrame<T>& nextKeyFrame = *it;
+	const KeyFrame<T>& previousKeyFrame = *std::prev(it);
+	float blend = (elapsedTime - previousKeyFrame.timeFrame) / (nextKeyFrame.timeFrame - previousKeyFrame.timeFrame);
+
+	return interpolation(previousKeyFrame.value, nextKeyFrame.value, blend);
 }
 
 void AnimationSystem::update(float dt)
