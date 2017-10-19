@@ -344,7 +344,7 @@ int main() {
 	world.addSystem<CameraSystem>();
 	world.addSystem<LightSystem>();
 	world.addSystem<TerrainSystem>();
-	//world.addSystem<ParticleSystem>();
+	world.addSystem<ParticleSystem>();
 	world.addSystem<AnimationSystem>();
 	world.addSystem<MeshRenderingSystem>();
 
@@ -360,11 +360,11 @@ int main() {
 		"res/SkyBox/back.png", "res/SkyBox/front.png"
 	);
 	camera->skyBox = temp.get();
-	camera->fieldOfView = static_cast<float>(70 * (M_PI / 180.0F));
-	camera->near = 0.1f;
-	camera->far = 1000.0f;
-	camera->viewportWidth = static_cast<float>(window.getWidth());
-	camera->viewportHeight = static_cast<float>(window.getHeight());
+	camera->FieldOfView = static_cast<float>(70 * (M_PI / 180.0F));
+	camera->Near = 0.1f;
+	camera->Far = 1000.0f;
+	camera->ViewportWidth = static_cast<float>(window.getWidth());
+	camera->ViewportHeight = static_cast<float>(window.getHeight());
 
 	setUpGround(world);
 	setUpLights(world);
