@@ -48,11 +48,11 @@ void generateTerrain(Mesh& mesh)
 		}
 	}
 
-	std::shared_ptr<VertexBuffer> buffer = std::make_shared<VertexBuffer>(vertices.data(), sizeof(vertices));
+	mesh.setVertexBuffer(0, std::make_shared<VertexBuffer>(vertices.data(), sizeof(vertices)), sizeof(Vertex));
 
-	mesh.setVertexAttribute<Vector3>(buffer, VertexAttrib::Position, sizeof(Vertex), offsetof(Vertex, position));
-	mesh.setVertexAttribute<Vector2>(buffer, VertexAttrib::TexCoords, sizeof(Vertex), offsetof(Vertex, texCoords));
-	mesh.setVertexAttribute<Vector3>(buffer, VertexAttrib::Normal, sizeof(Vertex), offsetof(Vertex, normal));
+	mesh.setAttribute<Vector3>(0, VertexAttrib::Position, offsetof(Vertex, position));
+	mesh.setAttribute<Vector2>(0, VertexAttrib::TexCoords, offsetof(Vertex, texCoords));
+	mesh.setAttribute<Vector3>(0, VertexAttrib::Normal, offsetof(Vertex, normal));
 
 	mesh.setIndices(indexes.data(), sizeof(indexes));
 

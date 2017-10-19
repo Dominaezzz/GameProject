@@ -7,7 +7,8 @@ ParticleSystem::ParticleSystem(World* world) : System(world)
 	const Vector2 Vertices[] = { Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1) };
 	const int Indexes[] = { 0, 1, 2, 0, 2, 3 };
 
-	particleMesh.setVertexAttribute<Vector2>(std::make_shared<VertexBuffer>(Vertices, sizeof(Vertices)), VertexAttrib::Position, sizeof(Vector2), 0);
+	particleMesh.setVertexBuffer(0, std::make_shared<VertexBuffer>(Vertices, sizeof(Vertices)), sizeof(Vector2));
+	particleMesh.setAttribute<Vector2>(0, VertexAttrib::Position, 0);
 	particleMesh.setIndices(Indexes, sizeof(Indexes));
 	particleMesh.count = 6;
 
@@ -19,14 +20,15 @@ ParticleSystem::ParticleSystem(World* world) : System(world)
 
 	numberOfRows = particleShader.getUniformLocation("numberOfRows");
 #if PARTICLE_SYSTEM_IS_INSTANCED
-	particleMesh.setVertexAttribute<Vector4>(
-		perParticleBuffer, particleShader.getAttributeLocation("transform"), sizeof(ParticleInstance), offsetof(ParticleInstance, transform), false, true
+	particleMesh.setVertexBuffer(1, perParticleBuffer, sizeof(ParticleInstance));
+	particleMesh.setAttribute<Vector4>(
+		1, particleShader.getAttributeLocation("transform"), offsetof(ParticleInstance, transform), false, true
 	);
-	particleMesh.setVertexAttribute<float>(
-		perParticleBuffer, particleShader.getAttributeLocation("indexF"), sizeof(ParticleInstance), offsetof(ParticleInstance, indexF), false, true
+	particleMesh.setAttribute<float>(
+		1, particleShader.getAttributeLocation("indexF"), offsetof(ParticleInstance, indexF), false, true
 	);
-	particleMesh.setVertexAttribute<float>(
-		perParticleBuffer, particleShader.getAttributeLocation("blend"), sizeof(ParticleInstance), offsetof(ParticleInstance, blend), false, true
+	particleMesh.setAttribute<float>(
+		1, particleShader.getAttributeLocation("blend"), offsetof(ParticleInstance, blend), false, true
 	);
 #else
 	transformation = particleShader.getAttributeLocation("transform");

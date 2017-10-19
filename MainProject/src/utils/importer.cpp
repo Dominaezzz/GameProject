@@ -22,13 +22,39 @@ std::shared_ptr<Mesh> loadMesh(glTF_t* gltf, const mesh_t& mesh, std::vector<std
 
 	const auto& primitive = mesh.primitives[0];
 
+	std::map<size_t, size_t> bufferViewToBufferMap;
+	for (auto && attribute : primitive.attributes)
+	{
+		const accessor_t& accessor = gltf->accessors[attribute.second];
+
+		if (bufferViewToBufferMap.count(accessor.bufferView) == 0)
+		{
+			const size_t stride = gltf->bufferViews[accessor.bufferView].byteStride;
+			if (accessor.byteOffset >= stride || accessor.byteOffset == 0) continue;
+			const size_t index = modelMesh->getBufferCount();
+			modelMesh->setVertexBuffer(index, vertexBuffers[accessor.bufferView], stride);
+			bufferViewToBufferMap[accessor.bufferView] = index;
+		}
+	}
+
 	auto it = primitive.attributes.find("POSITION");
 	if (it != primitive.attributes.end())
 	{
 		const accessor_t& accessor = gltf->accessors[it->second];
 
-		int stride = gltf->bufferViews[accessor.bufferView].byteStride;
-		modelMesh->setVertexAttribute<Vector3>(vertexBuffers[accessor.bufferView], VertexAttrib::Position, stride, accessor.byteOffset);
+		int bufferIndex, relativeOffset = 0;
+		const size_t stride = gltf->bufferViews[accessor.bufferView].byteStride;
+		if (bufferViewToBufferMap.count(accessor.bufferView) == 0)
+		{
+			bufferIndex = modelMesh->getBufferCount();
+			modelMesh->setVertexBuffer(bufferIndex, vertexBuffers[accessor.bufferView], sizeof(Vector3), accessor.byteOffset);
+		}
+		else
+		{
+			bufferIndex = bufferViewToBufferMap[accessor.bufferView];
+			relativeOffset = accessor.byteOffset;
+		}
+		modelMesh->setAttribute<Vector3>(bufferIndex, VertexAttrib::Position, relativeOffset);
 		modelMesh->count = accessor.count;
 	}
 
@@ -37,8 +63,19 @@ std::shared_ptr<Mesh> loadMesh(glTF_t* gltf, const mesh_t& mesh, std::vector<std
 	{
 		const accessor_t& accessor = gltf->accessors[it->second];
 
-		int stride = gltf->bufferViews[accessor.bufferView].byteStride;
-		modelMesh->setVertexAttribute<Vector2>(vertexBuffers[accessor.bufferView], VertexAttrib::TexCoords, stride, accessor.byteOffset);
+		int bufferIndex, relativeOffset = 0;
+		const size_t stride = gltf->bufferViews[accessor.bufferView].byteStride;
+		if (bufferViewToBufferMap.count(accessor.bufferView) == 0)
+		{
+			bufferIndex = modelMesh->getBufferCount();
+			modelMesh->setVertexBuffer(bufferIndex, vertexBuffers[accessor.bufferView], sizeof(Vector2), accessor.byteOffset);
+		}
+		else
+		{
+			bufferIndex = bufferViewToBufferMap[accessor.bufferView];
+			relativeOffset = accessor.byteOffset;
+		}
+		modelMesh->setAttribute<Vector2>(bufferIndex, VertexAttrib::TexCoords, relativeOffset);
 	}
 
 	it = primitive.attributes.find("NORMAL");
@@ -46,8 +83,19 @@ std::shared_ptr<Mesh> loadMesh(glTF_t* gltf, const mesh_t& mesh, std::vector<std
 	{
 		const accessor_t& accessor = gltf->accessors[it->second];
 
-		int stride = gltf->bufferViews[accessor.bufferView].byteStride;
-		modelMesh->setVertexAttribute<Vector3>(vertexBuffers[accessor.bufferView], VertexAttrib::Normal, stride, accessor.byteOffset);
+		int bufferIndex, relativeOffset = 0;
+		const size_t stride = gltf->bufferViews[accessor.bufferView].byteStride;
+		if (bufferViewToBufferMap.count(accessor.bufferView) == 0)
+		{
+			bufferIndex = modelMesh->getBufferCount();
+			modelMesh->setVertexBuffer(bufferIndex, vertexBuffers[accessor.bufferView], sizeof(Vector3), accessor.byteOffset);
+		}
+		else
+		{
+			bufferIndex = bufferViewToBufferMap[accessor.bufferView];
+			relativeOffset = accessor.byteOffset;
+		}
+		modelMesh->setAttribute<Vector3>(bufferIndex, VertexAttrib::Normal, relativeOffset);
 	}
 
 	it = primitive.attributes.find("TANGENT");
@@ -55,8 +103,19 @@ std::shared_ptr<Mesh> loadMesh(glTF_t* gltf, const mesh_t& mesh, std::vector<std
 	{
 		const accessor_t& accessor = gltf->accessors[it->second];
 
-		int stride = gltf->bufferViews[accessor.bufferView].byteStride;
-		modelMesh->setVertexAttribute<Vector3>(vertexBuffers[accessor.bufferView], VertexAttrib::Tangent, stride, accessor.byteOffset);
+		int bufferIndex, relativeOffset = 0;
+		const size_t stride = gltf->bufferViews[accessor.bufferView].byteStride;
+		if (bufferViewToBufferMap.count(accessor.bufferView) == 0)
+		{
+			bufferIndex = modelMesh->getBufferCount();
+			modelMesh->setVertexBuffer(bufferIndex, vertexBuffers[accessor.bufferView], sizeof(Vector3), accessor.byteOffset);
+		}
+		else
+		{
+			bufferIndex = bufferViewToBufferMap[accessor.bufferView];
+			relativeOffset = accessor.byteOffset;
+		}
+		modelMesh->setAttribute<Vector3>(bufferIndex, VertexAttrib::Tangent, relativeOffset);
 	}
 
 	it = primitive.attributes.find("BITANGENT");
@@ -64,8 +123,19 @@ std::shared_ptr<Mesh> loadMesh(glTF_t* gltf, const mesh_t& mesh, std::vector<std
 	{
 		const accessor_t& accessor = gltf->accessors[it->second];
 
-		int stride = gltf->bufferViews[accessor.bufferView].byteStride;
-		modelMesh->setVertexAttribute<Vector3>(vertexBuffers[accessor.bufferView], VertexAttrib::BiTangent, stride, accessor.byteOffset);
+		int bufferIndex, relativeOffset = 0;
+		const size_t stride = gltf->bufferViews[accessor.bufferView].byteStride;
+		if (bufferViewToBufferMap.count(accessor.bufferView) == 0)
+		{
+			bufferIndex = modelMesh->getBufferCount();
+			modelMesh->setVertexBuffer(bufferIndex, vertexBuffers[accessor.bufferView], sizeof(Vector3), accessor.byteOffset);
+		}
+		else
+		{
+			bufferIndex = bufferViewToBufferMap[accessor.bufferView];
+			relativeOffset = accessor.byteOffset;
+		}
+		modelMesh->setAttribute<Vector3>(bufferIndex, VertexAttrib::BiTangent, relativeOffset);
 	}
 
 	it = primitive.attributes.find("WEIGHT");
@@ -73,8 +143,19 @@ std::shared_ptr<Mesh> loadMesh(glTF_t* gltf, const mesh_t& mesh, std::vector<std
 	{
 		const accessor_t& accessor = gltf->accessors[it->second];
 
-		int stride = gltf->bufferViews[accessor.bufferView].byteStride;
-		modelMesh->setVertexAttribute<Vector4>(vertexBuffers[accessor.bufferView], VertexAttrib::Weights, stride, accessor.byteOffset);
+		int bufferIndex, relativeOffset = 0;
+		const size_t stride = gltf->bufferViews[accessor.bufferView].byteStride;
+		if (bufferViewToBufferMap.count(accessor.bufferView) == 0)
+		{
+			bufferIndex = modelMesh->getBufferCount();
+			modelMesh->setVertexBuffer(bufferIndex, vertexBuffers[accessor.bufferView], sizeof(Vector4), accessor.byteOffset);
+		}
+		else
+		{
+			bufferIndex = bufferViewToBufferMap[accessor.bufferView];
+			relativeOffset = accessor.byteOffset;
+		}
+		modelMesh->setAttribute<Vector4>(bufferIndex, VertexAttrib::Weights, relativeOffset);
 	}
 
 	it = primitive.attributes.find("JOINT");
@@ -82,8 +163,19 @@ std::shared_ptr<Mesh> loadMesh(glTF_t* gltf, const mesh_t& mesh, std::vector<std
 	{
 		const accessor_t& accessor = gltf->accessors[it->second];
 
-		int stride = gltf->bufferViews[accessor.bufferView].byteStride;
-		modelMesh->setVertexAttribute<Vector4>(vertexBuffers[accessor.bufferView], VertexAttrib::Joints, stride, accessor.byteOffset);
+		int bufferIndex, relativeOffset = 0;
+		const size_t stride = gltf->bufferViews[accessor.bufferView].byteStride;
+		if (bufferViewToBufferMap.count(accessor.bufferView) == 0)
+		{
+			bufferIndex = modelMesh->getBufferCount();
+			modelMesh->setVertexBuffer(bufferIndex, vertexBuffers[accessor.bufferView], sizeof(Vector4), accessor.byteOffset);
+		}
+		else
+		{
+			bufferIndex = bufferViewToBufferMap[accessor.bufferView];
+			relativeOffset = accessor.byteOffset;
+		}
+		modelMesh->setAttribute<Vector4>(bufferIndex, VertexAttrib::Joints, relativeOffset);
 	}
 
 

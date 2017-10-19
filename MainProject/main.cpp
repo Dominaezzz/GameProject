@@ -206,10 +206,9 @@ GameObject* buildBox(World& world)
 			Vector3(Size, -Size,  Size), Vector3(Size,  Size,  Size)
 		};
 
-		auto buffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
 		filter->mesh = std::make_shared<Mesh>();
-
-		filter->mesh->setVertexAttribute<Vector3>(buffer, VertexAttrib::Position, sizeof(Vector3), 0);
+		filter->mesh->setVertexBuffer(0, std::make_shared<VertexBuffer>(vertices, sizeof(vertices)), sizeof(Vector3));
+		filter->mesh->setAttribute<Vector3>(0, VertexAttrib::Position, 0);
 		filter->mesh->setIndices(indices, sizeof(indices));
 	}
 

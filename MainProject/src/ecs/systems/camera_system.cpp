@@ -21,9 +21,8 @@ CameraSystem::CameraSystem(World* world) : System(world), cameraBuffer(sizeof(Ma
 		Vector3( Size, -Size,  Size), Vector3( Size,  Size,  Size)
 	};
 
-	const auto buffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
-
-	skyBoxMesh.setVertexAttribute<Vector3>(buffer, VertexAttrib::Position, sizeof(Vector3), 0);
+	skyBoxMesh.setVertexBuffer(0, std::make_shared<VertexBuffer>(vertices, sizeof(vertices)), sizeof(Vector3));
+	skyBoxMesh.setAttribute<Vector3>(0, VertexAttrib::Position, 0);
 	skyBoxMesh.setIndices(indices, sizeof(indices));
 	skyBoxMesh.count = 36;
 

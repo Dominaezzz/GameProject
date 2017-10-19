@@ -1,15 +1,19 @@
 #include "vertex_array.h"
 #include <utility>
-#include <algorithm>
 
-VertexArray::VertexArray()
+VertexArray::VertexArray() : vertexBuffers(1)
 {
-	glGenVertexArrays(1, &vao);
+	glCreateVertexArrays(1, &vao);
 }
 
 VertexArray::~VertexArray()
 {
 	glDeleteVertexArrays(1, &vao);
+}
+
+GLuint VertexArray::getId() const
+{
+	return this->vao;
 }
 
 void VertexArray::bind() const
@@ -20,6 +24,13 @@ void VertexArray::bind() const
 void VertexArray::unBind() const
 {
 	glBindVertexArray(0);
+}
+
+void VertexArray::setVertexBuffer(const size_t index, const std::shared_ptr<VertexBuffer>& vertexBuffer, const size_t stride, const size_t offset)
+{
+	if (vertexBuffers.size() <= index) vertexBuffers.resize(index + 1);
+	vertexBuffers[index] = std::make_pair(vertexBuffer, stride);
+	glVertexArrayVertexBuffer(this->vao, index, vertexBuffer->getId(), offset, stride);
 }
 
 void VertexArray::setIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
@@ -68,11 +79,6 @@ void VertexArray::drawInstanced(PrimitiveType type, size_t offset, size_t count,
 	if (autoBind)unBind();
 }
 
-size_t VertexArray::getAttributeCount() const
-{
-	return vertexAttributes.size();
-}
-
 size_t VertexArray::getBufferCount() const
 {
 	return vertexBuffers.size();
@@ -80,10 +86,5 @@ size_t VertexArray::getBufferCount() const
 
 std::shared_ptr<VertexBuffer> VertexArray::operator[](const int index) const
 {
-	auto temp = std::find_if(vertexAttributes.begin(), vertexAttributes.end(),
-		[index](const VertexAttribute& attrib) -> bool {
-			return attrib.index == index;
-		}
-	);
-	return temp == vertexAttributes.end() ? nullptr : vertexBuffers[temp->bufferIndex];
+	return vertexBuffers[index].first;
 }

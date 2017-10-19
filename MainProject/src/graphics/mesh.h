@@ -20,9 +20,6 @@ public:
 	void render(bool autoBind = true) const;
 	void renderInstanced(GLsizei instances, bool autoBind = true) const;
 	void setIndices(const int* data, size_t size);
-	template<typename T, typename Type = float>
-	void setVertexAttribute(std::shared_ptr<VertexBuffer> buffer, unsigned int index, int stride, int offset, bool normalized = false, bool isInstanced = false)
-	{
-		VertexArray::setAttribute<T, Type>(buffer, index, stride, offset, normalized, isInstanced);
-	}
+	using VertexArray::setVertexBuffer;
+	using VertexArray::setAttribute;
 };
