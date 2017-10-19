@@ -286,7 +286,7 @@ void assignParentsAndSkin(glTF_t* gltf, std::vector<GameObject*>& nodes)
 }
 
 template<typename T>
-void loadAnimationChannel(glTF_t* gltf, const animation_sampler_t& sampler, std::set<KeyFrame<T>>& frames)
+void loadAnimationChannel(glTF_t* gltf, const animation_sampler_t& sampler, KeyFrames<T>& frames)
 {
 	// Time values
 	const accessor_t& in_accessor = gltf->accessors[sampler.input];

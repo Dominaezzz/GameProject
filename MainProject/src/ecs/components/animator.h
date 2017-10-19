@@ -10,26 +10,36 @@ struct KeyFrame
 	const T value;
 
 	KeyFrame(float time_frame, const T& value) : timeFrame(time_frame), value(value) { }
+
+	struct Cmp
+	{
+		using is_transparent = void;
+
+		bool operator()(const KeyFrame& l, const KeyFrame& r) const
+		{
+			return l.timeFrame < r.timeFrame;
+		}
+
+		bool operator()(const KeyFrame& l, const float& r) const
+		{
+			return l.timeFrame < r;
+		}
+
+		bool operator()(const float& l, const KeyFrame& r) const
+		{
+			return l < r.timeFrame;
+		}
+	};
 };
 
-template<typename T>
-inline bool operator <(const KeyFrame<T>& left, const KeyFrame<T>& right)
-{
-	return left.timeFrame < right.timeFrame;
-}
-
-template<typename T>
-inline bool operator >(const KeyFrame<T>& left, const KeyFrame<T>& right)
-{
-	return left.timeFrame > right.timeFrame;
-}
+template<class T> using KeyFrames = std::set<KeyFrame<T>, typename KeyFrame<T>::Cmp>;
 
 struct NodeAnimation
 {
 	Transform* node;
-	std::set<KeyFrame<Vector3>> translations;
-	std::set<KeyFrame<Quaternion>> rotations;
-	std::set<KeyFrame<Vector3>> scales;
+	KeyFrames<Vector3> translations;
+	KeyFrames<Quaternion> rotations;
+	KeyFrames<Vector3> scales;
 };
 
 struct Animation

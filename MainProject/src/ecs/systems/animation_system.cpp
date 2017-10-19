@@ -5,7 +5,7 @@ AnimationSystem::AnimationSystem(World * world) : System(world)
 }
 
 template<typename T>
-static T findCurrent(const std::set<KeyFrame<T>>& keyFrames, float elapsedTime, const T& def, const std::function<T (const T&, const T&, float)>& interpolation)
+static T findCurrent(const KeyFrames<T>& keyFrames, float elapsedTime, const T& def, const std::function<T (const T&, const T&, float)>& interpolation)
 {
 	for (auto it = keyFrames.begin(); it != keyFrames.end(); ++it)
 	{
