@@ -44,7 +44,7 @@ float getValue(float value, float deviation, int power = 1)
 	return value + static_cast<float>(rand * 2 - 1) * deviation;
 }
 
-void init_particle(Particle& particle, ParticleEmitter& emitter, std::function<int(float)> size)
+void init_particle(Particle& particle, ParticleEmitter& emitter, const std::function<int(float)>& size)
 {
 	Vector3 direction, deviation;
 	if (emitter.direction == Vector3(0, 0, 0))
