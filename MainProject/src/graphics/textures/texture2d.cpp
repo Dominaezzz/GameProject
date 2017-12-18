@@ -62,7 +62,7 @@ void Texture2D::setSubData(const void* pixels, PixelFormat format, int x, int y,
 #endif
 }
 
-std::shared_ptr<Texture2D> Texture2D::fromFile(const std::string& path, const bool useMipMaps) {
+std::unique_ptr<Texture2D> Texture2D::fromFile(const std::string& path, const bool useMipMaps) {
 	stbi_set_flip_vertically_on_load(true);
 
 	int width, height, components;
@@ -87,7 +87,7 @@ std::shared_ptr<Texture2D> Texture2D::fromFile(const std::string& path, const bo
 			throw std::runtime_error("None matching components: " + std::to_string(components));
 	}
 
-	auto texture = std::make_shared<Texture2D>(width, height, RGBA);
+	auto texture = std::make_unique<Texture2D>(width, height, RGBA);
 	texture->setData<GLubyte>(data, format);
 
 	if (useMipMaps)

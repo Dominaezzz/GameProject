@@ -23,5 +23,5 @@ public:
 	template<typename Type>
 	void setSubData(const void* pixels, PixelFormat format, int x, int y, int width, int height);
 
-	static std::shared_ptr<Texture2D> fromFile(const std::string& path, bool useMipMaps = false);
+	static std::unique_ptr<Texture2D> fromFile(const std::string& path, bool useMipMaps = false);
 };
