@@ -54,8 +54,7 @@ struct Vector : public math::TVector<size, T>
 {
 	T data[size];
 
-	constexpr Vector() : Vector(0) {}
-	constexpr explicit Vector(T value)
+	constexpr explicit Vector(T value = 0)
 	{
 		for (size_t i = 0; i < size; i++)
 		{
@@ -174,9 +173,8 @@ struct Vector<2, T> : public math::TVector<2, T>
 		};
 	};
 
-	constexpr Vector() : Vector(0) {}
-	constexpr explicit Vector(T value) : x(value), y(value) {}
-	constexpr Vector(T _x, T _y) : x(_x), y(_y) {}
+	constexpr Vector(T x, T y) : x(x), y(y) {}
+	constexpr explicit Vector(T value = 0) : x(value), y(value) {}
 };
 
 template<typename T>
@@ -329,10 +327,9 @@ struct Vector<3, T> : public math::TVector<3, T>
 		};
 	};
 
-	constexpr Vector() : Vector(0) {}
-	constexpr explicit Vector(T value) : x(value), y(value), z(value) {}
-	constexpr Vector(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
-	constexpr Vector(const Vector<2, T>& vec2, T _z) : x(vec2.x), y(vec2.y), z(_z) {}
+	constexpr Vector(T x, T y, T z) : x(x), y(y), z(z) {}
+	constexpr explicit Vector(T value = 0) : Vector(value, value, value) {}
+	constexpr explicit Vector(const Vector<2, T>& vec2, T z = 0) : Vector(vec2.x, vec2.y, z) {}
 };
 
 template<typename T>
@@ -698,11 +695,10 @@ struct Vector<4, T> : public math::TVector<4, T>
 		};
 	};
 
-	constexpr Vector() : Vector(0) {}
-	constexpr explicit Vector(const T value) : x(value), y(value), z(value), w(value) {}
-	constexpr Vector(const T _x, const T _y, const T _z, const T _w) : x(_x), y(_y), z(_z), w(_w) {}
-	constexpr Vector(const Vector<3, T>& vec3, const T _w) : x(vec3.x), y(vec3.y), z(vec3.z), w(_w) {}
-	constexpr Vector(const Vector<2, T>& vec2, const T _z, const T _w) : x(vec2.x), y(vec2.y), z(_z), w(_w) {}
+	constexpr Vector(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
+	constexpr explicit Vector(T value = 0) : Vector(value, value, value, value) {}
+	constexpr explicit Vector(const Vector<3, T>& vec3, T w = 0) : Vector(vec3.x, vec3.y, vec3.z, w) {}
+	constexpr explicit Vector(const Vector<2, T>& vec2, T z = 0, T w = 0) : Vector(vec2.x, vec2.y, z, w) {}
 };
 
 template<size_t size, typename T>
