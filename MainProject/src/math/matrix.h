@@ -737,17 +737,17 @@ std::ostream& operator<<(std::ostream& stream, const Matrix<rows, columns, T>& m
 	return stream;
 }
 
-typedef Matrix<2, 2, int> Matrix2i;
-typedef Matrix<2, 2, float> Matrix2;
-typedef Matrix<2, 2, float> Matrix2f;
-typedef Matrix<2, 2, double> Matrix2d;
+using Matrix2i = Matrix<2, 2, int>;
+using Matrix2  = Matrix<2, 2, float>;
+using Matrix2f = Matrix<2, 2, float>;
+using Matrix2d = Matrix<2, 2, double>;
 
-typedef Matrix<3, 3, int> Matrix3i;
-typedef Matrix<3, 3, float> Matrix3;
-typedef Matrix<3, 3, float> Matrix3f;
-typedef Matrix<3, 3, double> Matrix3d;
+using Matrix3i = Matrix<3, 3, int>;
+using Matrix3  = Matrix<3, 3, float>;
+using Matrix3f = Matrix<3, 3, float>;
+using Matrix3d = Matrix<3, 3, double>;
 
-typedef Matrix<4, 4, int> Matrix4i;
-typedef Matrix<4, 4, float> Matrix4;
-typedef Matrix<4, 4, float> Matrix4f;
-typedef Matrix<4, 4, double> Matrix4d;
+using Matrix4i = Matrix<4, 4, int>;
+using Matrix4  = Matrix<4, 4, float>;
+using Matrix4f = Matrix<4, 4, float>;
+using Matrix4d = Matrix<4, 4, double>;

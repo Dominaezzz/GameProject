@@ -893,20 +893,20 @@ namespace vec
 	}
 }
 
-typedef Vector<2, int> Vector2i;
-typedef Vector<2, float> Vector2;
-typedef Vector<2, float> Vector2f;
-typedef Vector<2, double> Vector2d;
+using Vector2i = Vector<2, int>;
+using Vector2  = Vector<2, float>;
+using Vector2f = Vector<2, float>;
+using Vector2d = Vector<2, double>;
 
-typedef Vector<3, int> Vector3i;
-typedef Vector<3, float> Vector3;
-typedef Vector<3, float> Vector3f;
-typedef Vector<3, double> Vector3d;
+using Vector3i = Vector<3, int>;
+using Vector3  = Vector<3, float>;
+using Vector3f = Vector<3, float>;
+using Vector3d = Vector<3, double>;
 
-typedef Vector<4, int> Vector4i;
-typedef Vector<4, float> Vector4;
-typedef Vector<4, float> Vector4f;
-typedef Vector<4, double> Vector4d;
+using Vector4i = Vector<4, int>;
+using Vector4  = Vector<4, float>;
+using Vector4f = Vector<4, float>;
+using Vector4d = Vector<4, double>;
 
 // template <typename T> const Vector<T> Vector<T>::right(1, 0, 0);
 // template <typename T> const Vector<T> Vector<T>::up(0, 1, 0);

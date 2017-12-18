@@ -210,6 +210,6 @@ constexpr Vector<3, T> operator*(const TQuaternion<T>& lhs, const Vector<3, T>& 
 	return rhs + temp;
 }
 
-typedef TQuaternion<double> Quaterniond;
-typedef TQuaternion<float> Quaternionf;
-typedef TQuaternion<float> Quaternion;
+using Quaterniond = TQuaternion<double>;
+using Quaternionf = TQuaternion<float>;
+using Quaternion  = TQuaternion<float>;
